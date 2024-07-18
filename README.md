@@ -1,3 +1,7 @@
+# Wisselwerking
+
+[![Actions Status](https://github.com/CentreForDigitalHumanities/wisselwerking/workflows/Unit%20tests/badge.svg)](https://github.com/CentreForDigitalHumanities/wisselwerking/actions)
+
 # Toewijzen wisselwerkingen
 
 1. Download de resultaten als puntkomma-gescheiden CSV-bestand.
@@ -20,3 +24,4 @@ python history.py "/run/user/1000/gvfs/dav:host=webdav.uu.nl,ssl=true/Data/GW/Pr
 ```
 
 Hint: zorg dat het huidige jaar al op de juiste plek staat zodat die worden meegenomen.
+

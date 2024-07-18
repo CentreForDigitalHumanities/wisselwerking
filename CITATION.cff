@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: 'Wisselwerking'
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - name: 'Research Software Lab, Centre for Digital Humanities, Utrecht University'
+    website: 'https://cdh.uu.nl/about/research-software-lab/'
+repository-code: 'github:CentreForDigitalHumanities/wisselwerking'
+abstract: >-
+  Deelnemersregistratie voor GW-OBP wisselwerking
+license: BSD-3

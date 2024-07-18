@@ -1,23 +1,11 @@
-.DS_Store
-aanmeldformulier-wisselwerking.csv
-toewijzingen.csv
-toewijzingen.*.txt
-__pycache__
-history*.csv
-*.pyc
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Temporary files
-/static/
-
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-*.log
 
 # Unit test / coverage reports
 .coverage
@@ -26,6 +14,11 @@ pip-delete-this-directory.txt
 coverage.xml
 *.cover
 .pytest_cache/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
 
 # pyenv
 .python-version
@@ -38,7 +31,3 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
-# Node
-node_modules/
-frontend/src/environments/version.ts

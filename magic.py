@@ -14,6 +14,7 @@ from wisselwerking.settings import \
     CAPACITY_CHOICE, \
     CAPACITY_VALUE, \
     TEAM, \
+    MAIL_COLUMN, \
     ENROLLMENT_SOURCE, \
     ENROLLMENT_FIRSTNAME, \
     ENROLLMENT_LASTNAME, \
@@ -61,7 +62,7 @@ def mail_template(assigned, enrollment):
     third_choice = enrollment[ENROLLMENT_CHOICES[2]].strip()
     if assigned == first_choice or first_choice == RANDOM_CHOICE:
         # first choice
-        content = f"""Je bent geplaatst voor de Wisselwerking {assigned}. We hebben je gegevens doorgegeven aan de contactpersoon van deze Wisselwerking. Deze zal contact met opnemen om verdere afspraken te maken over je deelname.
+        content = f"""Je bent geplaatst voor de Wisselwerking {assigned}. We hebben je gegevens doorgegeven aan de contactpersoon van deze Wisselwerking. Deze zal contact met je opnemen om verdere afspraken te maken over je deelname.
 
 Heel veel plezier bij je wisselwerking!"""
     elif assigned == second_choice or assigned == third_choice or \
@@ -77,12 +78,16 @@ Heel veel plezier bij je wisselwerking!"""
 
         content = f"""Helaas was bij jouw eerste keuze voor de Wisselwerking bij {first_choice} geen plek meer. Je bent nu geplaatst bij je {ordinal} keuze: {assigned}.
 
-We hebben je gegevens doorgegeven aan de contactpersoon van deze Wisselwerking. Deze zal contact met opnemen om verdere afspraken te maken over je deelname.
+We hebben je gegevens doorgegeven aan de contactpersoon van deze Wisselwerking. Deze zal contact met je opnemen om verdere afspraken te maken over je deelname.
 
 Heel veel plezier bij je wisselwerking!"""
     else:
         # nothing
-        content = f"Je hebt je aangemeld voor de Wisselwerking {first_choice}. Helaas waren deze en eventuele verdere keuzes vol."
+        content = f"""Je hebt je aangemeld voor de Wisselwerking {first_choice}. Helaas waren deze en eventuele verdere keuzes vol. Het is nog wel mogelijk om aan van de volgende wisselwerkingen mee te doen:
+        
+{list_available()}
+
+Zou je ons z.s.m. kunnen mailen als je, je voor een van deze wisselwerkingen nog wilt aanmelden?"""
 
     return f"""
 Beste {name},
@@ -150,7 +155,7 @@ with open(filename, mode="r", encoding='iso8859-15') as csv_file:
     line_count = 0
 
     for row in csv_reader:
-        if row[ENROLLMENT_SOURCE] != "Test":
+        if row["_fd_Source"] != "Testing":
             mail = row[ENROLLMENT_MAIL].lower().strip()
             if mail in unique_emails:
                 print("DUBBELE DEELNEMER: " + mail)
@@ -214,7 +219,11 @@ def show_counts(show_unassigned=True):
             if choice != RANDOM_CHOICE:
                 empty.append(choice)
         else:
-            print(f"{str(count).rjust(3)} {choice}")
+            try:
+                capacity = capacities[choice]
+            except KeyError:
+                capacity = "?"
+            print(f"{str(count).rjust(3)} van {str(capacity).ljust(3)} {choice}")
             sum += count
 
     print("=" * (maxlength + 4))
@@ -235,6 +244,22 @@ def show_counts(show_unassigned=True):
             print(enrollment[ENROLLMENT_MAIL])
 
 
+def list_available():
+    choices = sorted(set(capacities.keys()))
+    available = []
+
+    for choice in choices:
+        count = counter.get(choice, 0)
+        try:
+            capacity = capacities[choice]
+            if count < capacity:
+                available.append(choice)
+        except KeyError:
+            pass
+        
+    return '\n'.join(f'- {choice}' for choice in available)
+
+
 choices = list(sorted(set(capacities.keys()).union(counter.keys())))
 for item, capacity in capacities.items():
     # possible to close a department
@@ -251,17 +276,13 @@ for key in ENROLLMENT_CHOICES:
         if choice and choice not in NONE_CHOICE:
             priority.append((enrollment, choice.strip()))
 
-try:
-    while unassigned and choices:
-        done = True
-        for choice in list(choices):
-            for enrollment, enrollment_choice in priority:
-                if enrollment in unassigned and enrollment_choice == choice:
-                    assign_choice(enrollment, choice)
-                    done = False
-                    break
-        if done:
-            break
+try:    
+    for enrollment, enrollment_choice in priority:
+        if enrollment not in unassigned:
+            continue
+        for choice in list(choices):            
+            if enrollment_choice == choice:
+                assign_choice(enrollment, choice)
 except KeyboardInterrupt:
     # still store the updated capacities
     save_capacities()
@@ -323,6 +344,12 @@ with open(output_file, mode="w", encoding="utf-8-sig") as csv_file:
             ASSIGNED_CHOICE: assigned,
             "mail": mail_template(assigned, row),
             **row
+        })
+    for enrollment in unassigned:
+        writer.writerow({
+            ASSIGNED_CHOICE: NO_ASSIGNMENT,
+            "mail": mail_template(NO_ASSIGNMENT, enrollment),
+            **enrollment
         })
 
 # Store the assignments per choice - to mail the organizers
