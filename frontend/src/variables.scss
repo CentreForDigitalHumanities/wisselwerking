@@ -1,1 +1,10 @@
 @forward 'bulma/sass/utilities';
+
+body {
+    --bulma-body-family: Merriweather, serif;
+}
+
+.title,
+.subtitle {
+    font-family: Open Sans, sans-serif;
+}

@@ -1,0 +1,69 @@
+<div class="columns">
+    <div class="column is-8">
+        <h1 class="title" i18n>Wisselwerking Geesteswetenschappen</h1>
+        <div class="content">
+            <p class="has-text-weight-bold">
+                Ben jij nieuwsgierig naar de werkzaamheden van je collega’s of wil je meer inzicht krijgen in de
+                processen
+                van
+                het team waar jij veel mee samenwerkt? Doe dan mee aan wisselwerking en ga op bezoek bij je collega's.
+                Bekijk
+                hieronder de programma’s van de deelnemende teams.
+            </p>
+
+            <h2 class="subtitle">Wanneer en voor wie?</h2>
+            <p>De wisselwerkingen vinden plaats van december 2024 tot de zomer van 2025, voor personeel van de faculteit
+                Geesteswetenschappen.</p>
+
+            <h2 class="subtitle">Bij wie kun je op bezoek?</h2>
+            @if (sessions) {
+            <nav class="buttons">
+                @for (session of sessions; track session.pk) {
+                <a class="button" [ngClass]="{'is-primary': interested[session.pk]}" (click)="scrollTo(session)">
+                    @if (interested[session.pk]) {
+                    <span class="icon">
+                        <fa-icon [icon]="faCheck"></fa-icon>
+                    </span>
+                    }
+                    <span>{{session.title}}</span>
+                </a>
+                }
+            </nav>
+            }
+        </div>
+
+        @for (session of sessions; track session.pk) {
+        <div class="box">
+            <a [name]="session.pk"></a>
+            <wsl-exchange-session [session]="session" [interested]="interested[session.pk]"
+                (interestedChange)="updateList(session.pk, $event)"></wsl-exchange-session>
+        </div>
+        }
+    </div>
+    <div class="column is-4">
+        <div class="box sticky">
+            <div class="content">
+                @if (interestedList) {
+                <h2 class="subtitle">Meedoen?</h2>
+                <p>
+                    Je kunt je aanmelden tot en met <span class="highlight">maandag 11 november 2024</span>.
+                </p>
+                <ul>
+                    @for (session of interestedList; track session.pk) {
+                    <li>{{session.title}}</li>
+                    }
+                </ul>
+                }
+                <a class="button" [routerLink]="['/registration']">Aanmelden</a>
+            </div>
+        </div>
+        <div class="scroll-to-top">
+            <button class="button is-black" (click)="scrollUp()">
+                <span class="icon">
+                    <fa-icon [icon]="faCircleChevronUp"></fa-icon>
+                </span>
+                <span>Omhoog</span>
+            </button>
+        </div>
+    </div>
+</div>

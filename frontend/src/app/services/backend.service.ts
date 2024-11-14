@@ -9,6 +9,10 @@ import { BACKEND_URL } from '../app.config';
     providedIn: 'root'
 })
 export class BackendService {
+    private cache: {
+        [objectUrl: string]: Promise<any>
+    } = {};
+
     protected apiUrl: Promise<string> | null = null;
 
     constructor(protected config: ConfigService, protected http: HttpClient, @Inject(BACKEND_URL) private backendUrl: string) {
@@ -20,16 +24,20 @@ export class BackendService {
      * (i.e. whatever comes after, for example, '/api/').
      * Note that this method will add a '/' at the end of the url if it does not exist.
      */
-    async get(objectUrl: string): Promise<any> {
-        const baseUrl = await this.getApiUrl();
-        if (!objectUrl.endsWith('/')) { objectUrl = `${objectUrl}/`; }
-        const url: string = encodeURI(baseUrl + objectUrl);
-
-        try {
-            return await lastValueFrom(this.http.get(url));
-        } catch (error) {
-            return await this.handleError(error);
+    async get<T = any>(objectUrl: string, cache = true): Promise<T> {
+        if (!objectUrl.endsWith('/')) {
+            objectUrl = `${objectUrl}/`;
         }
+        return cache && this.cache[objectUrl] || (this.cache[objectUrl] = (async () => {
+            const baseUrl = await this.getApiUrl();
+            const url: string = encodeURI(baseUrl + objectUrl);
+
+            try {
+                return await lastValueFrom(this.http.get(url));
+            } catch (error) {
+                return await this.handleError(error);
+            }
+        })());
     }
 
     getApiUrl(): Promise<string> {

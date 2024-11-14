@@ -8,7 +8,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'revproxy',
-    'example'
+    'registration'
 ]
 
 MIDDLEWARE = [
@@ -37,3 +37,5 @@ TIME_ZONE = 'Europe/Amsterdam'
 USE_I18N = True
 
 USE_TZ = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

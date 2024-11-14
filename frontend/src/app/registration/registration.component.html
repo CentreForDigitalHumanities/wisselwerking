@@ -1,0 +1,163 @@
+<div class="container is-max-desktop">
+    <h1 class="title">
+        Aanmeldformulier Wisselwerking
+    </h1>
+
+    <p>Geef je eerste en eventueel ook tweede of derde keuze door. Je inschrijving is pas definitief als je een
+        bevestiging
+        hebt ontvangen van de aanbieder van de wisselwerking. Houd er rekening mee dat je eerste keuze vol kan zijn.</p>
+
+    <div class="mt-5">
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label">Taal</span>
+            </div>
+            <div class="field-body">
+                <div class="field has-addons">
+                    <p class="control">
+                        <button class="button is-primary">Nederlands</button>
+                    </p>
+                    <p class="control">
+                        <button class="button">English</button>
+                    </p>
+                </div>
+            </div>
+        </label>
+
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label">Naam</span>
+            </div>
+            <div class="field-body">
+                <div class="field has-addons">
+                    <p class="control">
+                        <input class="input" type="text" placeholder="Voornaam" />
+                    </p>
+                    <p class="control" style="max-width:10em">
+                        <input class="input" type="text" placeholder="Tussenvoegel" />
+                    </p>
+                    <p class="control is-expanded">
+                        <input class="input" type="text" placeholder="Achternaam" />
+                    </p>
+                </div>
+            </div>
+        </label>
+
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label">Afdeling</span>
+            </div>
+            <div class="field-body">
+                <div class="field has-addons">
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select>
+                                <option value="---">&mdash;</option>
+                                @for (department of departments$ | async; track department.slug) {
+                                <option [value]="department.slug">{{department.title}}</option>
+                                }
+                                <option value="anders">Anders namelijk...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="control">
+                        <input class="input" type="text" placeholder="afdelingsnaam" />
+                    </p>
+                </div>
+            </div>
+        </label>
+
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label">E-mailadres</span>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input class="input" type="email" placeholder="E-mailadres" />
+                    </p>
+                </div>
+            </div>
+        </label>
+
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label">Keuzes</span>
+            </div>
+            <div class="field-body">
+                <div class="field is-grouped is-grouped-multiline">
+                    @for (priority of sessionPriorities$ | async; track priority.session.pk) {
+                    <p class="control">
+                        <span class="button" (click)="updatePriority(priority.session.pk, priority.priority)">
+                            <span class="icon is-small">
+                                <fa-icon [icon]="priorityIcons[priority.priority]"></fa-icon>
+                            </span>
+                            {{priority.session.title}}
+                            <span class="icon is-small">
+                                <fa-icon [icon]="faTimes"></fa-icon>
+                            </span>
+                        </span>
+                    </p>
+                    }
+                    @empty {
+                        <p class="control">
+                            <span class="button">...</span>
+                        </p>
+                    }
+                </div>
+            </div>
+        </label>
+
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label"><!-- empty--></span>
+            </div>
+            <div class="field-body">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <div class="select is-fullwidth">
+                            <select>
+                                <option value="0">» Verras mij</option>
+                                @for (session of sessions$ | async; track session.pk) {
+                                <option [value]="session.pk">{{session.title}}
+                                    @if (session.full) {
+                                         &mdash; VOL!
+                                    }
+                                </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <p class="control">
+                        <span class="button">Toevoegen</span>
+                    </p>
+                </div>
+            </div>
+        </label>
+
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label">Opmerkingen</span>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <textarea class="textarea" type="text" placeholder="Opmerkingen"></textarea>
+                    </p>
+                </div>
+            </div>
+        </label>
+        <div class="field is-horizontal">
+            <div class="field-label">
+                <!-- Left empty for spacing -->
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-primary">Verstuur!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

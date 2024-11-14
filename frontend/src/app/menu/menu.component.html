@@ -17,13 +17,16 @@
 
         <div id="navigation-links" class="navbar-menu" [ngClass]="{'is-active': burgerActive}" [@slideInOut]="burgerShow">
             <div class="navbar-start">
-                <a [routerLink]="['/home']" routerLinkActive="is-active" class="navbar-item" i18n>
-                    Home
+                <a [routerLink]="['/overview']" routerLinkActive="is-active" class="navbar-item" i18n>
+                    Overzicht
+                </a>
+                <a [routerLink]="['/registration']" routerLinkActive="is-active" class="navbar-item" i18n>
+                    Aanmelden
                 </a>
             </div>
             <div class="navbar-end">
                 <wsl-dark-mode-toggle class="navbar-item"></wsl-dark-mode-toggle>
-                @if (languages) {
+                <!-- @if (languages) {
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">
                         <span class="icon">
@@ -39,7 +42,7 @@
                         </a>
                     </div>
                 </div>
-                }
+                } -->
             </div>
         </div>
     </div>

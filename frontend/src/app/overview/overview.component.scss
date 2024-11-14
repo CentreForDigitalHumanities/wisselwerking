@@ -1,0 +1,11 @@
+.sticky {
+    position: sticky;
+    top: 0;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+}

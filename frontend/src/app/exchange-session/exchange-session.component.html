@@ -1,0 +1,46 @@
+<h2 class="subtitle">{{title}}</h2>
+<p>{{intro}}</p>
+<details class="content">
+    <summary aria-expanded="false">Meer details</summary>
+    <blockquote>
+        <h3 class="subtitle">Programma</h3>
+        <p>{{program}}</p>
+
+        <wsl-program-detail-line label="Taal">
+            {{languages}}
+        </wsl-program-detail-line>
+        <wsl-program-detail-line label="Aantal deelnemers per keer">
+            {{participantCount}}
+        </wsl-program-detail-line>
+        <wsl-program-detail-line label="Aantal wisselwerkingen">
+            {{sessionCount}}
+        </wsl-program-detail-line>
+        <wsl-program-detail-line label="Wanneer">
+            {{date}}
+        </wsl-program-detail-line>
+        <wsl-program-detail-line label="Locatie">
+            {{location}}
+        </wsl-program-detail-line>
+        @if (contact) {
+        <wsl-program-detail-line label="Contact">
+            {{contact}}
+        </wsl-program-detail-line>
+        }
+    </blockquote>
+</details>
+@if (session?.full) {
+<button class="button is-danger" disabled>
+    <span class="icon">
+        <fa-icon [icon]="faCheck"></fa-icon>
+    </span>
+    <span>VOL</span>
+</button>
+}
+@else {
+<button class="button" (click)="clickInterested()" [ngClass]="{'is-primary': interested}">
+    <span class="icon">
+        <fa-icon [icon]="faCheck"></fa-icon>
+    </span>
+    <span>Geïnteresseerd</span>
+</button>
+}

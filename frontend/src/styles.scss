@@ -6,6 +6,14 @@
     $blue: #5287C6);
 @use 'bulma/bulma';
 
+$highlight: var(--bulma-warning);
+$highlight-text: var(--bulma-warning-invert);
+
+.highlight {
+    background: $highlight;
+    color: $highlight-text;
+}
+
 @media print {
 
     .is-hidden-print,
