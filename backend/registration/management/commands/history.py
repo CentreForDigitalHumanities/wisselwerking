@@ -4,8 +4,8 @@ import csv
 import pathlib
 
 from typing import Dict, List, Tuple, cast
-from django.core.management.base import BaseCommand, CommandError
-from registration.models import Exchange, ExchangeSession, Person
+from django.core.management.base import BaseCommand
+from registration.models import ExchangeSession, Person
 
 
 HISTORY_YEARS = "jaren"

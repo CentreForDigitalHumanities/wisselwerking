@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Set
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from registration.models import Exchange, ExchangeSession, Person, Registration
 

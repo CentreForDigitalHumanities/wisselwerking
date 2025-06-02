@@ -24,7 +24,16 @@ ENROLLMENT_DEPT = "afdeling"
 ENROLLMENT_ASSIGNED = "toegewezen"
 ENROLLMENT_CHOICES = ["eerste_keuze", "tweede_keuze", "derde_keuze"]
 
-ignore_dept = ["HFS", "**GEEN**", "» Verras me", "Maak je keuze", "geen", "niet ingevuld", "n.v.t.", ""]
+ignore_dept = [
+    "HFS",
+    "**GEEN**",
+    "» Verras me",
+    "Maak je keuze",
+    "geen",
+    "niet ingevuld",
+    "n.v.t.",
+    "",
+]
 renames: Dict[str, str] = {}
 dept_lookup: Dict[str, Department] = {}
 
@@ -89,7 +98,13 @@ def read_history_year(filepath: str):
 
         for row in csv_reader:
             add = None
-            for format in ["%d-%m-%Y %H:%M", "%d-%m-%Y, %H:%M",  "%d-%m-%y %H:%M", "%d-%m-%Y", "%d-%m-%y"]:
+            for format in [
+                "%d-%m-%Y %H:%M",
+                "%d-%m-%Y, %H:%M",
+                "%d-%m-%y %H:%M",
+                "%d-%m-%Y",
+                "%d-%m-%y",
+            ]:
                 try:
                     add = datetime.datetime.strptime(
                         row[ENROLLMENT_ADD], format
@@ -133,7 +148,6 @@ def read_history_year(filepath: str):
                         # removing existing registrations
                         registration.delete()
 
-
             except Person.DoesNotExist:
                 person = Person()
                 person.user = user
@@ -171,7 +185,7 @@ def read_history_year(filepath: str):
                     continue
                 choice_dept = lookup_dept(rename_dept(value), True)
                 choice = (
-                    None if choice_dept == None else dept_session(exchange, choice_dept)
+                    None if choice_dept is None else dept_session(exchange, choice_dept)
                 )
 
                 # choice is None if the registration is blank (e.g. assign me randomly)

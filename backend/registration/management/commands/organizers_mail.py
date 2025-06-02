@@ -1,10 +1,9 @@
 import csv
 import pathlib
 from typing import Dict, List, Tuple
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 import os
-import datetime
 
 from registration.models import (
     Exchange,
@@ -49,8 +48,12 @@ class Command(BaseCommand):
 
         exchange = Exchange.objects.get(active=True)
         for session in ExchangeSession.objects.filter(exchange=exchange):
-            organizers: List[Person] = list(session.organizers.all().order_by("user__first_name"))
-            assigned: List[Person] = list(session.assigned.all().order_by("user__first_name"))
+            organizers: List[Person] = list(
+                session.organizers.all().order_by("user__first_name")
+            )
+            assigned: List[Person] = list(
+                session.assigned.all().order_by("user__first_name")
+            )
 
             mail = self.get_mail(organizers)
             mail_subject, mail_content = self.prepare_mail(
@@ -60,7 +63,8 @@ class Command(BaseCommand):
                 {
                     RECEIVERS: ",".join(
                         self.format_mail_person(organizer) for organizer in organizers
-                    ) or session.department.email,
+                    )
+                    or session.department.email,
                     MAIL_SUBJECT: mail_subject,
                     MAIL_CONTENT: mail_content,
                 }
@@ -119,7 +123,7 @@ class Command(BaseCommand):
                 list(organizer.given_names.strip() for organizer in organizers),
             )
         else:
-            organizers_names = "organisator" # TODO: translate
+            organizers_names = "organisator"  # TODO: translate
 
         choice_assignments = self.format_assigned(assigned)
 

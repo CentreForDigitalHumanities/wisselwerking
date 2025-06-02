@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.db import models, transaction
 from django.dispatch import receiver
-from django.db.models.signals import post_save
 from django.db.models.signals import pre_save, post_save
 import re
 
@@ -126,8 +125,8 @@ class Person(models.Model):
         target.prefix_surname = self.prefix_surname
 
         if (
-            target.user.last_login != None
-            and self.user.last_login != None
+            target.user.last_login is not None
+            and self.user.last_login is not None
             and self.user.last_login > target.user.last_login
         ):
             target.user.last_login = self.user.last_login

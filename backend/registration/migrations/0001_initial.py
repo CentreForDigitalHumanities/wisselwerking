@@ -15,153 +15,335 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Exchange',
+            name="Exchange",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('enrollment_deadline', models.DateField()),
-                ('active', models.BooleanField()),
-                ('begin', models.IntegerField(unique=True)),
-                ('end', models.IntegerField(unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("enrollment_deadline", models.DateField()),
+                ("active", models.BooleanField()),
+                ("begin", models.IntegerField(unique=True)),
+                ("end", models.IntegerField(unique=True)),
             ],
             options={
-                'unique_together': {('begin', 'end')},
+                "unique_together": {("begin", "end")},
             },
         ),
         migrations.CreateModel(
-            name='Person',
+            name="Person",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('prefix_surname', models.CharField(blank=True)),
-                ('url', models.URLField(blank=True)),
-                ('language', models.CharField(choices=[('en', 'English'), ('nl', 'Dutch')])),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("prefix_surname", models.CharField(blank=True)),
+                ("url", models.URLField(blank=True)),
+                (
+                    "language",
+                    models.CharField(choices=[("en", "English"), ("nl", "Dutch")]),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ExchangeDescription',
+            name="ExchangeDescription",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField()),
-                ('language', models.CharField(choices=[('en', 'English'), ('nl', 'Dutch')])),
-                ('exchange', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='registration.exchange')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField()),
+                (
+                    "language",
+                    models.CharField(choices=[("en", "English"), ("nl", "Dutch")]),
+                ),
+                (
+                    "exchange",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="registration.exchange",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Department',
+            name="Department",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(blank=True, max_length=254)),
-                ('avatar', models.FileField(blank=True, upload_to='')),
-                ('contact_persons', models.ManyToManyField(to='registration.person')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("email", models.EmailField(blank=True, max_length=254)),
+                ("avatar", models.FileField(blank=True, upload_to="")),
+                ("contact_persons", models.ManyToManyField(to="registration.person")),
             ],
         ),
         migrations.AddField(
-            model_name='person',
-            name='departments',
-            field=models.ManyToManyField(blank=True, to='registration.department'),
+            model_name="person",
+            name="departments",
+            field=models.ManyToManyField(blank=True, to="registration.department"),
         ),
         migrations.AlterField(
-            model_name='department',
-            name='contact_persons',
-            field=models.ManyToManyField(blank=True, to='registration.person'),
+            model_name="department",
+            name="contact_persons",
+            field=models.ManyToManyField(blank=True, to="registration.person"),
         ),
         migrations.CreateModel(
-            name='ExchangeSession',
+            name="ExchangeSession",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('participants_min', models.IntegerField()),
-                ('participants_max', models.IntegerField()),
-                ('session_count', models.IntegerField()),
-                ('assigned', models.ManyToManyField(blank=True, related_name='exchange_assignees', to='registration.person')),
-                ('department', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='registration.department')),
-                ('exchange', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='registration.exchange')),
-                ('organizers', models.ManyToManyField(blank=True, related_name='exchange_organizers', to='registration.person')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("participants_min", models.IntegerField()),
+                ("participants_max", models.IntegerField()),
+                ("session_count", models.IntegerField()),
+                (
+                    "assigned",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="exchange_assignees",
+                        to="registration.person",
+                    ),
+                ),
+                (
+                    "department",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="registration.department",
+                    ),
+                ),
+                (
+                    "exchange",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="registration.exchange",
+                    ),
+                ),
+                (
+                    "organizers",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="exchange_organizers",
+                        to="registration.person",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='DepartmentDescription',
+            name="DepartmentDescription",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=150)),
-                ('description', models.TextField(blank=True)),
-                ('language', models.CharField(choices=[('en', 'English'), ('nl', 'Dutch')])),
-                ('department', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='description', to='registration.department')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=150)),
+                ("description", models.TextField(blank=True)),
+                (
+                    "language",
+                    models.CharField(choices=[("en", "English"), ("nl", "Dutch")]),
+                ),
+                (
+                    "department",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="description",
+                        to="registration.department",
+                    ),
+                ),
             ],
         ),
         migrations.AlterField(
-            model_name='department',
-            name='email',
-            field=models.EmailField(blank=True, help_text='Email address of the department itself', max_length=254),
+            model_name="department",
+            name="email",
+            field=models.EmailField(
+                blank=True,
+                help_text="Email address of the department itself",
+                max_length=254,
+            ),
         ),
         migrations.AddField(
-            model_name='department',
-            name='slug',
+            model_name="department",
+            name="slug",
             field=models.CharField(unique=True),
         ),
         migrations.AddField(
-            model_name='person',
-            name='other_affiliation',
+            model_name="person",
+            name="other_affiliation",
             field=models.CharField(blank=True),
         ),
         migrations.CreateModel(
-            name='PersonMail',
+            name="PersonMail",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('address', models.EmailField(max_length=254, unique=True)),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='registration.person')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("address", models.EmailField(max_length=254, unique=True)),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="registration.person",
+                    ),
+                ),
             ],
         ),
         migrations.AlterModelOptions(
-            name='department',
-            options={'ordering': ['slug']},
+            name="department",
+            options={"ordering": ["slug"]},
         ),
         migrations.AddField(
-            model_name='department',
-            name='url',
+            model_name="department",
+            name="url",
             field=models.URLField(blank=True),
         ),
         migrations.AddField(
-            model_name='person',
-            name='external',
+            model_name="person",
+            name="external",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='department',
-            name='slug',
+            model_name="department",
+            name="slug",
             field=models.SlugField(unique=True),
         ),
         migrations.CreateModel(
-            name='Registration',
+            name="Registration",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('priority', models.IntegerField()),
-                ('date_time', models.DateTimeField()),
-                ('requestor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='registration.person')),
-                ('session', models.ForeignKey(blank=True, help_text='Keep empty for assigning to a random session', null=True, on_delete=django.db.models.deletion.CASCADE, to='registration.exchangesession')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("priority", models.IntegerField()),
+                ("date_time", models.DateTimeField()),
+                (
+                    "requestor",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="registration.person",
+                    ),
+                ),
+                (
+                    "session",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Keep empty for assigning to a random session",
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="registration.exchangesession",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Mail',
+            name="Mail",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('confirm_registration', 'Confirm Registration'), ('assigned', 'Assigned'), ('overview_assigned', 'Overview Assigned'), ('no_participants', 'No Participants')])),
-                ('language', models.CharField(choices=[('en', 'English'), ('nl', 'Dutch')])),
-                ('subject', models.CharField(max_length=150)),
-                ('text', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("confirm_registration", "Confirm Registration"),
+                            ("assigned", "Assigned"),
+                            ("overview_assigned", "Overview Assigned"),
+                            ("no_participants", "No Participants"),
+                        ]
+                    ),
+                ),
+                (
+                    "language",
+                    models.CharField(choices=[("en", "English"), ("nl", "Dutch")]),
+                ),
+                ("subject", models.CharField(max_length=150)),
+                ("text", models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name='ExchangeSessionDescription',
+            name="ExchangeSessionDescription",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subtitle', models.CharField(blank=True)),
-                ('program', models.TextField()),
-                ('language', models.CharField(choices=[('en', 'English'), ('nl', 'Dutch')])),
-                ('date', models.CharField()),
-                ('location', models.CharField()),
-                ('exchange', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='description', to='registration.exchangesession')),
-                ('title', models.CharField(blank=True)),
-                ('intro', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("subtitle", models.CharField(blank=True)),
+                ("program", models.TextField()),
+                (
+                    "language",
+                    models.CharField(choices=[("en", "English"), ("nl", "Dutch")]),
+                ),
+                ("date", models.CharField()),
+                ("location", models.CharField()),
+                (
+                    "exchange",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="description",
+                        to="registration.exchangesession",
+                    ),
+                ),
+                ("title", models.CharField(blank=True)),
+                ("intro", models.TextField()),
             ],
         ),
     ]

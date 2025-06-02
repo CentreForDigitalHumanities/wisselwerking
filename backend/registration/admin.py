@@ -1,8 +1,7 @@
-from typing import List, Set, cast
+from typing import List, cast
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.postgres.aggregates import StringAgg
-from django.urls import path
 from django.db.models.query import QuerySet
 
 
