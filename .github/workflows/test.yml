@@ -17,7 +17,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-25.04
 
     services:
       # Label used to access the service container
@@ -41,18 +41,17 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ['3.8']
-        node-version: ['18.x', '20.x']
+        python-version: ['3.11']
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: .nvmrc
     - name: Install Python dependencies
       run: |
         cd backend
