@@ -85,28 +85,50 @@
                 <span class="label">Keuzes</span>
             </div>
             <div class="field-body">
-                <div class="field is-grouped is-grouped-multiline">
-                    @for (priority of sessionPriorities$ | async; track priority.session.pk) {
+            </div>
+        </label>
+
+        @for (priority of sessionPriorities$ | async; track priority.session.pk; let first = $first; let last = $last) {
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label">
+                    {{priority.priority}}
+                </span>
+            </div>
+            <div class="field-body">
+                <div class="field has-addons">
                     <p class="control">
-                        <span class="button" (click)="updatePriority(priority.session.pk, priority.priority)">
+                        <button class="button" (click)="updatePriority(priority.session.pk, priority.priority - 1)"
+                            [disabled]="first">
                             <span class="icon is-small">
-                                <fa-icon [icon]="priorityIcons[priority.priority]"></fa-icon>
+                                <fa-icon [icon]="faChevronUp"></fa-icon>
                             </span>
+                        </button>
+                    </p>
+                    <p class="control">
+                        <button class="button" (click)="updatePriority(priority.session.pk, priority.priority + 1)"
+                            [disabled]="last">
+                            <span class="icon is-small">
+                                <fa-icon [icon]="faChevronDown"></fa-icon>
+                            </span>
+                        </button>
+                    </p>
+                    <p class="control">
+                        <button class="button">
                             {{priority.session.title}}
+                        </button>
+                    </p>
+                    <p class="control">
+                        <button class="button" (click)="remove(priority.session.pk)">
                             <span class="icon is-small">
                                 <fa-icon [icon]="faTimes"></fa-icon>
                             </span>
-                        </span>
+                        </button>
                     </p>
-                    }
-                    @empty {
-                        <p class="control">
-                            <span class="button">...</span>
-                        </p>
-                    }
                 </div>
             </div>
         </label>
+        }
 
         <label class="field is-horizontal">
             <div class="field-label is-normal">
@@ -116,12 +138,12 @@
                 <div class="field has-addons">
                     <div class="control is-expanded">
                         <div class="select is-fullwidth">
-                            <select>
+                            <select [(ngModel)]="selectedSession">
                                 <option value="0">» Verras mij</option>
                                 @for (session of sessions$ | async; track session.pk) {
                                 <option [value]="session.pk">{{session.title}}
                                     @if (session.full) {
-                                         &mdash; VOL!
+                                    &mdash; VOL!
                                     }
                                 </option>
                                 }
@@ -129,7 +151,7 @@
                         </div>
                     </div>
                     <p class="control">
-                        <span class="button">Toevoegen</span>
+                        <button class="button" (click)="add()">Toevoegen</button>
                     </p>
                 </div>
             </div>
@@ -144,6 +166,19 @@
                     <p class="control">
                         <textarea class="textarea" type="text" placeholder="Opmerkingen"></textarea>
                     </p>
+                </div>
+            </div>
+        </label>
+        <label class="field is-horizontal">
+            <div class="field-label is-normal">
+                <span class="label">Reden van deelname</span>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input class="input" type="text" />
+                    </p>
+                    <p class="help">(optioneel)</p>
                 </div>
             </div>
         </label>
