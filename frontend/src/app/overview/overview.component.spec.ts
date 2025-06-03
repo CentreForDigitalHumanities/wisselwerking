@@ -1,14 +1,16 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { OverviewComponent } from './overview.component';
 
-describe('HomeComponent', () => {
+describe('OverviewComponent', () => {
     let component: OverviewComponent;
     let fixture: ComponentFixture<OverviewComponent>;
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [OverviewComponent, HttpClientTestingModule]
+            imports: [OverviewComponent, HttpClientTestingModule],
+            providers: [provideRouter([])]
         })
             .compileComponents();
     }));
