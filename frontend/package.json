@@ -2,7 +2,7 @@
     "name": "wisselwerking",
     "scripts": {
         "start": "yarn serve",
-        "build": "ng build --base-href=/static/ --localize",
+        "build": "ng build --base-href=/static/",
         "watch": "ng build --watch",
         "test": "ng test --watch=true",
         "serve:ssr:wisselwerking": "node dist/wisselwerking/server/server.mjs",

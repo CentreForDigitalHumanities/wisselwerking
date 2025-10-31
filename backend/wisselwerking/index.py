@@ -13,5 +13,7 @@ def index(request: HttpRequest):
     location = finders.find(path.join(language, page, "index.html"))
     if not location:
         location = finders.find(path.join(language, "index.html"))
+    if not location:
+        location = finders.find("index.html")
 
     return HttpResponse(content=open(location))
