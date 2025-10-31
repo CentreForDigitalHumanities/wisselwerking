@@ -1,11 +1,13 @@
 import { Component, LOCALE_ID, Inject, OnInit, NgZone, afterRender } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateDirective } from '@ngx-translate/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGlobe, faSync } from '@fortawesome/free-solid-svg-icons';
 import { animations, showState } from '../animations';
 import { DarkModeToggleComponent } from '../dark-mode-toggle/dark-mode-toggle.component';
 import { LanguageInfo, LanguageService } from '../services/language.service';
+import { Language } from '../models';
 
 @Component({
     animations,
@@ -13,7 +15,7 @@ import { LanguageInfo, LanguageService } from '../services/language.service';
     templateUrl: './menu.component.html',
     styleUrls: ['./menu.component.scss'],
     standalone: true,
-    imports: [CommonModule, RouterLink, FontAwesomeModule, DarkModeToggleComponent]
+    imports: [CommonModule, RouterLink, FontAwesomeModule, DarkModeToggleComponent, TranslateDirective]
 })
 export class MenuComponent implements OnInit {
     burgerShow: showState = 'show';
@@ -71,13 +73,14 @@ export class MenuComponent implements OnInit {
         this.burgerShow = this.burgerShow === 'show' ? 'hide' : 'show';
     }
 
-    async setLanguage(language: string): Promise<void> {
+    async setLanguage(language: Language): Promise<void> {
         if (this.currentLanguage !== language) {
             this.loading = true;
             await this.languageService.set(language);
             // reload the application to make the server route
             // to the different language version
-            document.location.reload();
+            this.currentLanguage = language;
+            this.loading = false;
         }
     }
 }

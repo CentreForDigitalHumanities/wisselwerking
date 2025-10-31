@@ -1,18 +1,22 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewContainerRef } from '@angular/core';
-import { ExchangeSession, Language } from '../models';
-import { ProgramDetailLineComponent } from '../program-detail-line/program-detail-line.component';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { CommonModule } from '@angular/common';
+import { TranslateDirective, TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Subject, Subscription } from 'rxjs';
+import { ExchangeSession, Language } from '../models';
+import { ProgramDetailLineComponent } from '../program-detail-line/program-detail-line.component';
 
 @Component({
     selector: 'wsl-exchange-session',
     standalone: true,
-    imports: [CommonModule, ProgramDetailLineComponent, FontAwesomeModule],
+    imports: [CommonModule, ProgramDetailLineComponent, FontAwesomeModule, TranslateDirective, TranslatePipe],
     templateUrl: './exchange-session.component.html',
     styleUrl: './exchange-session.component.scss'
 })
-export class ExchangeSessionComponent implements OnChanges {
+export class ExchangeSessionComponent implements OnChanges, OnDestroy {
+    private subscription = new Subscription();
+    private triggerUpdate = new Subject();
     faCheck = faCheck;
 
     @Input()
@@ -36,8 +40,32 @@ export class ExchangeSessionComponent implements OnChanges {
     contact: string = '';
     nativeElement: HTMLElement;
 
-    constructor(private readonly viewRef: ViewContainerRef) {
+    unlimitedText = '';
+    dutchText = 'Nederlands';
+    englishText = 'Engels';
+    andText = 'en';
+
+    constructor(private readonly viewRef: ViewContainerRef, private translateService: TranslateService) {
         this.nativeElement = this.viewRef.element.nativeElement;
+
+        this.streamText('Onbeperkt', x => this.unlimitedText = x);
+        this.streamText('Nederlands', x => this.dutchText = x);
+        this.streamText('Engels', x => this.englishText = x);
+        this.streamText('en', x => this.andText = x);
+
+        this.subscription.add(
+            this.translateService.onLangChange.subscribe(() => this.triggerUpdate.next({})));
+
+        this.subscription.add(
+            this.triggerUpdate.subscribe(() => {
+                this.updateContent(<Language>this.translateService.getCurrentLang());
+            }));
+    }
+
+    private streamText(key: string, assign: (text: string) => void) {
+        this.subscription.add(
+            this.translateService.stream(key).subscribe(text => assign(text)));
+
     }
 
     clickInterested() {
@@ -45,6 +73,10 @@ export class ExchangeSessionComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        this.triggerUpdate.next({});
+    }
+
+    private updateContent(language: Language) {
         if (!this.session) {
             return;
         }
@@ -52,13 +84,13 @@ export class ExchangeSessionComponent implements OnChanges {
         if (this.session.participantsMin === this.session.participantsMax) {
             this.participantCount = this.session.participantsMin.toString();
         } else if (this.session.participantsMax > 90) {
-            this.participantCount = 'Onbeperkt';
+            this.participantCount = this.unlimitedText;
         } else {
             this.participantCount = `${this.session.participantsMin} à ${this.session.participantsMax}`;
         }
 
         if (this.session.sessionCount > 90) {
-            this.sessionCount = 'Onbeperkt';
+            this.sessionCount = this.unlimitedText;
         } else {
             this.sessionCount = this.session.sessionCount.toString();
         }
@@ -68,8 +100,9 @@ export class ExchangeSessionComponent implements OnChanges {
         const languages: Language[] = [];
 
         for (const description of this.session?.descriptions) {
-            if (description.language == 'nl' || !this.title) {
+            if (description.language == language || !this.title) {
                 this.date = description.date;
+                this.title = description.title;
                 this.subtitle = description.subtitle
                 this.intro = description.intro;
                 this.program = description.program;
@@ -79,7 +112,11 @@ export class ExchangeSessionComponent implements OnChanges {
             languages.push(description.language);
         }
 
-        this.languages = languages.sort().map(lang => lang === 'nl' ? 'Nederlands' : 'Engels').join(' en ');
+        this.languages = languages.sort().map(lang => lang === 'nl' ? this.dutchText : this.englishText).join(` ${this.andText} `);
         this.contact = this.session.organizers.map(person => person.fullName).sort().join('; ');
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

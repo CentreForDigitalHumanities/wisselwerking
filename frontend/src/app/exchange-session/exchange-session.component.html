@@ -1,28 +1,28 @@
 <h2 class="subtitle">{{title}}</h2>
-<p>{{intro}}</p>
+<p style="white-space: pre-wrap">{{intro}}</p>
 <details class="content">
-    <summary aria-expanded="false">Meer details</summary>
+    <summary aria-expanded="false" translate>Meer details</summary>
     <blockquote>
-        <h3 class="subtitle">Programma</h3>
-        <p>{{program}}</p>
+        <h3 class="subtitle" translate>Programma</h3>
+        <p style="white-space: pre-wrap">{{program}}</p>
 
-        <wsl-program-detail-line label="Taal">
+        <wsl-program-detail-line label="{{'Taal' | translate}}">
             {{languages}}
         </wsl-program-detail-line>
-        <wsl-program-detail-line label="Aantal deelnemers per keer">
+        <wsl-program-detail-line label="{{'Aantal deelnemers per keer' | translate}}">
             {{participantCount}}
         </wsl-program-detail-line>
-        <wsl-program-detail-line label="Aantal wisselwerkingen">
+        <wsl-program-detail-line label="{{'Aantal wisselwerkingen' | translate}}">
             {{sessionCount}}
         </wsl-program-detail-line>
-        <wsl-program-detail-line label="Wanneer">
+        <wsl-program-detail-line label="{{'Wanneer' | translate}}">
             {{date}}
         </wsl-program-detail-line>
-        <wsl-program-detail-line label="Locatie">
+        <wsl-program-detail-line label="{{'Locatie' | translate}}">
             {{location}}
         </wsl-program-detail-line>
         @if (contact) {
-        <wsl-program-detail-line label="Contact">
+        <wsl-program-detail-line label="{{'Contact' | translate}}">
             {{contact}}
         </wsl-program-detail-line>
         }
@@ -33,7 +33,7 @@
     <span class="icon">
         <fa-icon [icon]="faCheck"></fa-icon>
     </span>
-    <span>VOL</span>
+    <span translate>VOL</span>
 </button>
 }
 @else {
@@ -41,6 +41,6 @@
     <span class="icon">
         <fa-icon [icon]="faCheck"></fa-icon>
     </span>
-    <span>Geïnteresseerd</span>
+    <span translate>Geïnteresseerd</span>
 </button>
 }

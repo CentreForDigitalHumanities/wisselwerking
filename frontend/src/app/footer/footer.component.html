@@ -3,13 +3,13 @@
         <div class="container">
             <div class="columns">
                 <div class="column">
-                    <h1 class="subtitle" i18n>Wisselwerking</h1>
+                    <h1 class="subtitle" translate>Wisselwerking</h1>
                     <div class="content">
                         <p>
-                            <a [href]="environment.sourceUrl" target="_blank" i18n>Source code</a>&nbsp;<ng-container i18n>(BSD 3-Clause License)</ng-container>
+                            <a [href]="environment.sourceUrl" target="_blank" translate>Source code</a>&nbsp;<ng-container translate>(BSD 3-Clause License)</ng-container>
                         </p>
                         <p>
-                            <em><ng-container i18n>Version: </ng-container><span>{{environment.version}}</span>&nbsp;(<span [title]="environment.buildTime">{{buildTime}})</span></em>
+                            <em>{{ 'version' | translate:{version: environment.version} }}&nbsp;(<span [title]="environment.buildTime">{{buildTime}})</span></em>
                         </p>
                     </div>
                 </div>

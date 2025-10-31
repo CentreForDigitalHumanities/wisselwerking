@@ -1,8 +1,19 @@
 {
     "Source code": "Broncode",
     "(BSD 3-Clause License)": "(BSD 3-clausule licentie)",
-    "Version: ": "Versie: ",
-    "(source)": "(bron)",
-    "Home": "Startpagina",
-    " Home ": " Startpagina "
+    "version": "Versie: {{version}}",
+    "Overzicht": "Overzicht",
+    "Aanmelden": "Aanmelden",
+    "Wisselwerking": "Wisselwerking",
+    "Wisselwerking Geesteswetenschappen": "Wisselwerking Geesteswetenschappen",
+    "registerUntil": "Je kunt je aanmelden tot en met",
+    "Bij wie kun je op bezoek?": "Bij wie kun je op bezoek?",
+    "Meedoen?": "Meedoen?",
+    "Omhoog": "Omhoog",
+    "Taal": "Taal",
+    "registration": {
+        "title": "Aanmeldformulier Wisselwerking",
+        "explain": "Geef je eerste en eventueel ook tweede of derde keuze door. Je inschrijving is pas definitief als je een bevestiging hebt ontvangen van de aanbieder van de wisselwerking. Houd er rekening mee dat je eerste keuze vol kan zijn.",
+        "surprise": "Verras mij"
+    }
 }

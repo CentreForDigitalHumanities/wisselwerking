@@ -1,24 +1,22 @@
 <div class="container is-max-desktop">
-    <h1 class="title">
-        Aanmeldformulier Wisselwerking
-    </h1>
+    <h1 class="title" translate="registration.title"></h1>
 
-    <p>Geef je eerste en eventueel ook tweede of derde keuze door. Je inschrijving is pas definitief als je een
-        bevestiging
-        hebt ontvangen van de aanbieder van de wisselwerking. Houd er rekening mee dat je eerste keuze vol kan zijn.</p>
+    <p>{{ 'registration.explain' | translate }}</p>
 
     <div class="mt-5">
         <label class="field is-horizontal">
             <div class="field-label is-normal">
-                <span class="label">Taal</span>
+                <span class="label" translate>Taal</span>
             </div>
             <div class="field-body">
                 <div class="field has-addons">
                     <p class="control">
-                        <button class="button is-primary">Nederlands</button>
+                        <button (click)="setLanguage('nl')" class="button"
+                            [ngClass]="{'is-primary': currentLanguage=='nl'}">Nederlands</button>
                     </p>
                     <p class="control">
-                        <button class="button">English</button>
+                        <button (click)="setLanguage('en')" class="button"
+                            [ngClass]="{'is-primary': currentLanguage=='en'}">English</button>
                     </p>
                 </div>
             </div>
@@ -26,18 +24,21 @@
 
         <label class="field is-horizontal">
             <div class="field-label is-normal">
-                <span class="label">Naam</span>
+                <span class="label" translate>Naam</span>
             </div>
             <div class="field-body">
                 <div class="field has-addons">
                     <p class="control">
-                        <input class="input" type="text" placeholder="Voornaam" />
+                        <input required class="input" type="text" placeholder="{{ 'Voornaam' | translate }}"
+                            [(ngModel)]="registration.firstName" />
                     </p>
                     <p class="control" style="max-width:10em">
-                        <input class="input" type="text" placeholder="Tussenvoegel" />
+                        <input class="input" type="text" placeholder="{{ 'Tussenvoegsel' | translate }}"
+                            [(ngModel)]="registration.tussenvoegsel" />
                     </p>
                     <p class="control is-expanded">
-                        <input class="input" type="text" placeholder="Achternaam" />
+                        <input required class="input" type="text" placeholder="{{ 'Achternaam(en)' | translate }}"
+                            [(ngModel)]="registration.lastName" />
                     </p>
                 </div>
             </div>
@@ -45,36 +46,38 @@
 
         <label class="field is-horizontal">
             <div class="field-label is-normal">
-                <span class="label">Afdeling</span>
+                <span class="label" translate>Afdeling</span>
             </div>
             <div class="field-body">
-                <div class="field has-addons">
+                <div class="field has-addons" [ngClass]="{'has-addons': registration.department === 'anders'}">
                     <div class="control">
                         <div class="select is-fullwidth">
-                            <select>
+                            <select [(ngModel)]="registration.department">
                                 <option value="---">&mdash;</option>
                                 @for (department of departments$ | async; track department.slug) {
                                 <option [value]="department.slug">{{department.title}}</option>
                                 }
-                                <option value="anders">Anders namelijk...</option>
+                                <option value="anders" translate>Anders namelijk...</option>
                             </select>
                         </div>
                     </div>
+                    @if (registration.department === 'anders') {
                     <p class="control">
-                        <input class="input" type="text" placeholder="afdelingsnaam" />
+                        <input class="input" type="text" placeholder="{{ 'afdelingsnaam' | translate }}" />
                     </p>
+                    }
                 </div>
             </div>
         </label>
 
         <label class="field is-horizontal">
             <div class="field-label is-normal">
-                <span class="label">E-mailadres</span>
+                <span class="label" translate>E-mailadres</span>
             </div>
             <div class="field-body">
                 <div class="field">
                     <p class="control">
-                        <input class="input" type="email" placeholder="E-mailadres" />
+                        <input required class="input" type="email" placeholder="{{ 'E-mailadres' | translate }}" [(ngModel)]="registration.email" />
                     </p>
                 </div>
             </div>
@@ -82,7 +85,7 @@
 
         <label class="field is-horizontal">
             <div class="field-label is-normal">
-                <span class="label">Keuzes</span>
+                <span class="label" translate>Keuzes</span>
             </div>
             <div class="field-body">
             </div>
@@ -115,7 +118,7 @@
                     </p>
                     <p class="control">
                         <button class="button">
-                            {{priority.session.title}}
+                            {{priority.session.title || ('registration.surprise' | translate) }}
                         </button>
                     </p>
                     <p class="control">
@@ -139,11 +142,11 @@
                     <div class="control is-expanded">
                         <div class="select is-fullwidth">
                             <select [(ngModel)]="selectedSession">
-                                <option value="0">» Verras mij</option>
+                                <option value="0">» {{ 'registration.surprise' | translate }}</option>
                                 @for (session of sessions$ | async; track session.pk) {
                                 <option [value]="session.pk">{{session.title}}
                                     @if (session.full) {
-                                    &mdash; VOL!
+                                    &mdash; {{ 'VOL!' | translate }}
                                     }
                                 </option>
                                 }
@@ -151,7 +154,7 @@
                         </div>
                     </div>
                     <p class="control">
-                        <button class="button" (click)="add()">Toevoegen</button>
+                        <button class="button" (click)="add()" translate>Toevoegen</button>
                     </p>
                 </div>
             </div>
@@ -159,26 +162,26 @@
 
         <label class="field is-horizontal">
             <div class="field-label is-normal">
-                <span class="label">Opmerkingen</span>
+                <span class="label" translate>Opmerkingen</span>
             </div>
             <div class="field-body">
                 <div class="field">
                     <p class="control">
-                        <textarea class="textarea" type="text" placeholder="Opmerkingen"></textarea>
+                        <textarea class="textarea" type="text" placeholder="{{ 'Opmerkingen' | translate }}" [(ngModel)]="registration.notes" ></textarea>
                     </p>
                 </div>
             </div>
         </label>
         <label class="field is-horizontal">
             <div class="field-label is-normal">
-                <span class="label">Reden van deelname</span>
+                <span class="label" translate>Reden van deelname</span>
             </div>
             <div class="field-body">
                 <div class="field">
                     <p class="control">
-                        <input class="input" type="text" />
+                        <input class="input" type="text" [(ngModel)]="registration.reason"  />
                     </p>
-                    <p class="help">(optioneel)</p>
+                    <p class="help" translate>(optioneel)</p>
                 </div>
             </div>
         </label>
@@ -189,7 +192,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <button class="button is-primary">Verstuur!</button>
+                        <button class="button is-primary" translate>Verstuur!</button>
                     </div>
                 </div>
             </div>

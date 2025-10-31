@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Department, ExchangeSession } from '../models';
-import { BehaviorSubject } from 'rxjs';
+import { Department, ExchangeSession, Language } from '../models';
+import { BehaviorSubject, combineLatestWith, map } from 'rxjs';
 import { BackendService } from './backend.service';
+import { LanguageService } from './language.service';
 
 export const MIN_PRIORITY = 1;
 export const MAX_PRIORITY = 999;
@@ -11,26 +12,58 @@ export interface ExchangeSessionPriority {
     priority: number
 }
 
+interface Exchange {
+    "pk": number,
+    "begin": number,
+    "end": number,
+    "enrollment_deadline": string, // yyyy-MM-dd
+    "descriptions": {
+        text: string,
+        language: Language
+    }[]
+};
+
 @Injectable({
     providedIn: 'root'
 })
 export class RegistrationService {
+    private deadline = new BehaviorSubject<Date>(new Date());
+    private description = new BehaviorSubject<string>('');
     private interested = new BehaviorSubject<{ [pk: ExchangeSession['pk']]: boolean }>({});
     private interestedPriorities = new BehaviorSubject<ExchangeSessionPriority[]>([]);
     private sessions = new BehaviorSubject<ExchangeSession[]>([]);
 
+    deadline$ = this.deadline.asObservable();
+    description$ = this.description.asObservable();
     interested$ = this.interested.asObservable();
     sessionPriorities$ = this.interestedPriorities.asObservable();
-    sessions$ = this.sessions.asObservable();
+    sessions$ = this.sessions.pipe(
+        combineLatestWith(this.languageService.current$),
+        map(([sessions, language]) => {
+            return this.sessionsByLanguage(sessions, language);
+        }));
 
-    constructor(private backend: BackendService) {
+    constructor(private backend: BackendService, private languageService: LanguageService) {
+        this.backend.get('current_exchange').then((exchange: Exchange) => {
+            this.deadline.next(new Date(exchange.enrollment_deadline));
+            this.languageService.current$.subscribe(language => {
+                this.description.next(exchange.descriptions.find(d => d.language === language)?.text ?? '');
+            });
+        });
         this.backend.get('available_sessions').then(sessions => {
-            this.sessions.next((<ExchangeSession[]>sessions.map((session: any) => {
-                // add title
-                session.title = this.sessionTitle(session);
+            this.sessions.next(<ExchangeSession[]>sessions);
+        });
+    }
+
+    private sessionsByLanguage(sessions: ExchangeSession[], language: Language): ExchangeSession[] {
+        return sessions
+            .filter(session => session.descriptions.find(d => d.language === language))
+            .map((session) => {
+                // update title
+                session.title = this.sessionTitle(session, language);
                 session.sortTitle = (<string>session.title).replace(/[^A-Za-z]/g, '');
                 return session;
-            })).sort((a, b) => {
+            }).sort((a, b) => {
                 if (a.sortTitle === b.sortTitle) {
                     return 0;
                 } else if (a.sortTitle < b.sortTitle) {
@@ -38,14 +71,13 @@ export class RegistrationService {
                 } else {
                     return 1;
                 }
-            }));
-        });
+            });
     }
 
-    private sessionTitle(session: ExchangeSession) {
+    private sessionTitle(session: ExchangeSession, language: Language) {
         let title: string = '';
         for (const description of session.descriptions) {
-            if (description.language == 'nl' || !title) {
+            if (description.language == language || !title) {
                 title = description.title;
             }
         }
@@ -99,13 +131,19 @@ export class RegistrationService {
 
     update(pk: number, value: boolean) {
         const interested = { ...this.interested.value, [pk]: value };
-        const interestedPriorities = <ExchangeSessionPriority[]>(<[any, boolean][]>Object.entries(interested)).filter(([_, value]) => value).map(([pk, _]) => {
-            return {
-                session: this.sessions.value.find(session => pk == session.pk && !session.full),
-                // new sessions are placed at the end
-                priority: this.interestedPriorities.value.find(priority => pk == priority.session.pk)?.priority ?? MAX_PRIORITY
-            };
-        }).filter(session => !!session.session);
+        const interestedPriorities = <ExchangeSessionPriority[]>(<[any, boolean][]>Object.entries(interested))
+            .filter(([_, x]) => x)
+            .map(([x, _]) => {
+                x = parseInt(x);
+                return {
+                    // 'surprise me' option
+                    session: x === 0
+                        ? { pk: x }
+                        : this.sessions.value.find(session => x == session.pk && !session.full),
+                    // new sessions are placed at the end
+                    priority: this.interestedPriorities.value.find(priority => x == priority.session.pk)?.priority ?? MAX_PRIORITY
+                };
+            }).filter(session => !!session.session);
 
         this.interested.next(interested);
         this.interestedPriorities.next(this.cleanPriorities(interestedPriorities));

@@ -1,21 +1,17 @@
 <div class="columns">
     <div class="column is-8">
-        <h1 class="title" i18n>Wisselwerking Geesteswetenschappen</h1>
+        <h1 class="title" translate>Wisselwerking Geesteswetenschappen</h1>
         <div class="content">
             <p class="has-text-weight-bold">
-                Ben jij nieuwsgierig naar de werkzaamheden van je collega’s of wil je meer inzicht krijgen in de
-                processen
-                van
-                het team waar jij veel mee samenwerkt? Doe dan mee aan wisselwerking en ga op bezoek bij je collega's.
-                Bekijk
-                hieronder de programma’s van de deelnemende teams.
+                {{overviewIntro}}
             </p>
 
-            <h2 class="subtitle">Wanneer en voor wie?</h2>
-            <p>De wisselwerkingen vinden plaats van december 2024 tot de zomer van 2025, voor personeel van de faculteit
-                Geesteswetenschappen.</p>
+            <h2 class="subtitle">{{whenAndWhomTitle}}</h2>
+            <p>
+                {{whenAndWhomExplain}}
+            </p>
 
-            <h2 class="subtitle">Bij wie kun je op bezoek?</h2>
+            <h2 class="subtitle" translate>Bij wie kun je op bezoek?</h2>
             @if (sessions) {
             <nav class="buttons">
                 @for (session of sessions; track session.pk) {
@@ -44,9 +40,9 @@
         <div class="box sticky">
             <div class="content">
                 @if (interestedList) {
-                <h2 class="subtitle">Meedoen?</h2>
+                <h2 class="subtitle" translate>Meedoen?</h2>
                 <p>
-                    Je kunt je aanmelden tot en met <span class="highlight">maandag 11 november 2024</span>.
+                    <span translate="registerUntil"></span>&nbsp;<span class="highlight">{{deadline}}</span>.
                 </p>
                 <ul>
                     @for (session of interestedList; track session.pk) {
@@ -54,7 +50,7 @@
                     }
                 </ul>
                 }
-                <a class="button" [routerLink]="['/registration']">Aanmelden</a>
+                <a class="button" [routerLink]="['/registration']" translate [ngClass]="{'is-primary': interestedList.length}">Aanmelden</a>
             </div>
         </div>
         <div class="scroll-to-top">
@@ -62,7 +58,7 @@
                 <span class="icon">
                     <fa-icon [icon]="faCircleChevronUp"></fa-icon>
                 </span>
-                <span>Omhoog</span>
+                <span translate>Omhoog</span>
             </button>
         </div>
     </div>

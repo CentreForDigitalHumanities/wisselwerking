@@ -1,6 +1,7 @@
 import { Component, Inject, LOCALE_ID, OnDestroy } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 import { DarkModeService } from '../services/dark-mode.service';
 
@@ -8,6 +9,7 @@ import { DarkModeService } from '../services/dark-mode.service';
     selector: 'wsl-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
+    imports: [TranslatePipe, TranslateDirective],
     standalone: true
 })
 export class FooterComponent implements OnDestroy {

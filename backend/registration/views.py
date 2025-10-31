@@ -3,6 +3,7 @@ from registration.models import (
     Department,
     DepartmentDescription,
     Exchange,
+    ExchangeDescription,
     ExchangeSession,
     ExchangeSessionDescription,
     Person,
@@ -10,6 +11,27 @@ from registration.models import (
 )
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+
+@api_view()
+def current_exchange(request):
+    exchange = Exchange.objects.get(active=True)
+    descriptions = list(ExchangeDescription.objects.filter(exchange=exchange))
+    return Response(
+        {
+            "pk": exchange.pk,
+            "begin": exchange.begin,
+            "end": exchange.end,
+            "enrollment_deadline": exchange.enrollment_deadline,
+            "descriptions": [
+                {
+                    "language": description.language,
+                    "text": description.text,
+                }
+                for description in descriptions
+            ],
+        }
+    )
 
 
 @api_view()

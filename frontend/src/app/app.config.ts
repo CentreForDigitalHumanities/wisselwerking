@@ -1,4 +1,5 @@
 import { ApplicationConfig, InjectionToken, provideZoneChangeDetection } from '@angular/core';
+import { provideTranslateService } from "@ngx-translate/core";
 import { APP_BASE_HREF } from '@angular/common';
 import { provideHttpClient, withFetch, withXsrfConfiguration } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -30,6 +31,10 @@ export const appConfig: ApplicationConfig = {
                 cookieName: 'csrftoken',
                 headerName: 'X-CSRFToken'
             })),
+        provideTranslateService({
+            fallbackLang: 'nl',
+            lang: 'nl'
+        }),
         // The language is used as the base_path for finding the right
         // static-files. For example /nl/static/main.js
         // However the routing is done from a base path starting from
