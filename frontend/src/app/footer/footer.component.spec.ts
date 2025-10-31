@@ -1,5 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { FooterComponent } from './footer.component';
 
 describe('FooterComponent', () => {
@@ -8,7 +9,7 @@ describe('FooterComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [FooterComponent, HttpClientTestingModule]
+            imports: [FooterComponent, HttpClientTestingModule, TranslateModule.forRoot()]
         })
             .compileComponents();
     }));

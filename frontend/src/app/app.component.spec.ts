@@ -2,6 +2,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AppComponent } from './app.component';
 
@@ -9,7 +10,7 @@ describe('AppComponent', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
-                AppComponent, NoopAnimationsModule, RouterTestingModule, HttpClientTestingModule]
+                AppComponent, NoopAnimationsModule, RouterTestingModule, HttpClientTestingModule, TranslateModule.forRoot()]
         }).compileComponents();
     }));
 

@@ -1,6 +1,7 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { OverviewComponent } from './overview.component';
 
 describe('OverviewComponent', () => {
@@ -9,7 +10,7 @@ describe('OverviewComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [OverviewComponent, HttpClientTestingModule],
+            imports: [OverviewComponent, HttpClientTestingModule, TranslateModule.forRoot()],
             providers: [provideRouter([])]
         })
             .compileComponents();

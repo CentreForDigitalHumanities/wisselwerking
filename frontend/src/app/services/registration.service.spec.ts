@@ -1,14 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { RegistrationService } from './registration.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('RegistrationService', () => {
     let service: RegistrationService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule]
+            imports: [HttpClientTestingModule, TranslateModule.forRoot()]
         });
         service = TestBed.inject(RegistrationService);
     });
