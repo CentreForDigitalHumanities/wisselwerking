@@ -11,6 +11,7 @@ from registration.models import (
     ExchangeSessionDescription,
     Mail,
     Person,
+    get_team_str,
 )
 
 DEFAULT_LANGUAGE = "nl"
@@ -44,7 +45,7 @@ class Command(BaseCommand):
 
     def mail_info(self) -> Tuple[List[List[str]], List[str]]:
         output: List[Dict[str, str]] = []
-        team = self.get_team_str()
+        team = get_team_str()
 
         exchange = Exchange.objects.get(active=True)
         for session in ExchangeSession.objects.filter(exchange=exchange):

@@ -219,9 +219,9 @@ class PersonAdmin(admin.ModelAdmin):
 
 
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ["requestor", "session", "priority", "date_time"]
+    list_display = ["requestor", "date_time", "exchange", "session", "priority", "date_time"]
     ordering = ["date_time"]
-    list_filter = ["session__department", "session__exchange"]
+    list_filter = ["exchange", "session__department"]
 
 
 admin.site.register(Person, PersonAdmin)

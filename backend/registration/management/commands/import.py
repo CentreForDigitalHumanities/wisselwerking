@@ -14,6 +14,7 @@ from registration.models import (
     Person,
     PersonMail,
     Registration,
+    unique_username,
 )
 
 ENROLLMENT_ADD = "_fd_Add"
@@ -70,26 +71,6 @@ class Command(BaseCommand):
                 raise CommandError(f"File {filepath} does not exist")
 
             read_history_year(filepath)
-
-
-def unique_username(first_name: str, prefix: str, last_name: str) -> str:
-    full_name = " ".join([first_name.lower(), prefix.lower(), last_name.lower()])
-    candidates: List[str] = [
-        first_name.lower(),
-        full_name,
-    ]
-    duplicate = 2
-    while True:
-        if candidates:
-            candidate = candidates.pop(0)
-        else:
-            candidate = f"{full_name}{duplicate}"
-            duplicate += 1
-        candidate = re.sub(r"[\s\-_\.]+", "_", candidate).strip("_")
-        try:
-            User.objects.get(username=candidate)
-        except User.DoesNotExist:
-            return candidate
 
 
 def read_history_year(filepath: str):

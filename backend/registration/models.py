@@ -1,6 +1,6 @@
-from typing import Set
+from typing import List, Optional, Set
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models, transaction
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save
@@ -10,6 +10,29 @@ LANGUAGES = [("en", "English"), ("nl", "Dutch")]
 
 
 # APPLICATION: REGISTRATION
+def unique_username(first_name: str, prefix: str, last_name: str) -> str:
+    full_name = " ".join([first_name.lower(), prefix.lower(), last_name.lower()])
+    candidates: List[str] = [
+        first_name.lower(),
+        full_name,
+    ]
+    duplicate = 2
+    while True:
+        if candidates:
+            candidate = candidates.pop(0)
+        else:
+            candidate = f"{full_name}{duplicate}"
+            duplicate += 1
+        candidate = re.sub(r"[\s\-_\.]+", "_", candidate).strip("_")
+        try:
+            User.objects.get(username=candidate)
+        except User.DoesNotExist:
+            return candidate
+
+def get_team_str() -> str:
+    team = Group.objects.get(name="Team")
+    persons = Person.objects.filter(user__groups=team).order_by("user__first_name")
+    return ", ".join(person.full_name for person in persons)
 
 
 class Mail(models.Model):
@@ -21,7 +44,7 @@ class Mail(models.Model):
         # overview sent to the organizer of an exchange with the participants
         ("overview_assigned", "Overview Assigned"),
         # mail the organizers that no participants are registered for this exchange
-        ("no_participants", "No Participants")
+        ("no_participants", "No Participants"),
     ]
     type = models.CharField(choices=MAIL_TYPES)
     language = models.CharField(choices=LANGUAGES)
@@ -157,6 +180,20 @@ class Person(models.Model):
 
     def __str__(self):
         return self.full_name
+
+    @staticmethod
+    def get_by_email(email: str) -> Optional["Person"]:
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = None
+        if user:
+            return Person.objects.get(user=user)
+
+        try:
+            return PersonMail.objects.get(address=email)
+        except PersonMail.DoesNotExist:
+            return None
 
 
 class PersonMail(models.Model):
@@ -307,8 +344,21 @@ class Registration(models.Model):
         on_delete=models.CASCADE,
         help_text="Keep empty for assigning to a random session",
     )
+    exchange = models.ForeignKey(
+        Exchange, on_delete=models.CASCADE
+    )
     priority = models.IntegerField()
     date_time = models.DateTimeField()
+    notes = models.TextField()
+    reason = models.CharField()
+
+
+    def save(self, *args, **kwargs):
+        if self.session:
+            # make sure these are the same
+            self.exchange = self.session.exchange
+
+        super().save(*args, **kwargs)
 
 
 @receiver(pre_save, sender=Department)

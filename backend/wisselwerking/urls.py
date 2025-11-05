@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 from rest_framework import routers
-from registration.views import available_sessions, current_exchange, departments
+from registration.views import available_sessions, current_exchange, departments, register
 
 from .index import index
 from .proxy_frontend import proxy_frontend
@@ -41,6 +41,7 @@ urlpatterns = [
     path("api/available_sessions/", available_sessions),
     path("api/current_exchange/", current_exchange),
     path("api/departments/", departments),
+    path("api/register/", register),
     path("api/", include(api_router.urls)),
     path(
         "api-auth/",

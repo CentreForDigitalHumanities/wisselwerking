@@ -1,4 +1,8 @@
-<div class="container is-max-desktop">
+@if (thankYou) {
+<wsl-thank-you [firstName]="registration.firstName"></wsl-thank-you>
+}
+@else {
+<form class="container is-max-desktop" #form="ngForm" (ngSubmit)="form.form.valid && submit()">
     <h1 class="title" translate="registration.title"></h1>
 
     <p>{{ 'registration.explain' | translate }}</p>
@@ -30,15 +34,23 @@
                 <div class="field has-addons">
                     <p class="control">
                         <input required class="input" type="text" placeholder="{{ 'Voornaam' | translate }}"
-                            [(ngModel)]="registration.firstName" />
+                            name="firstName" [(ngModel)]="registration.firstName" #firstName="ngModel"
+                            [ngClass]="{'is-danger': firstName.touched && firstName.hasError('required')}" />
+                        @if (firstName.touched && firstName.hasError('required')) {
+                    <p class="help is-danger" translate>Naam vereist</p>
+                    }
                     </p>
                     <p class="control" style="max-width:10em">
                         <input class="input" type="text" placeholder="{{ 'Tussenvoegsel' | translate }}"
-                            [(ngModel)]="registration.tussenvoegsel" />
+                            name="tussenvoegsel" [(ngModel)]="registration.tussenvoegsel" />
                     </p>
                     <p class="control is-expanded">
                         <input required class="input" type="text" placeholder="{{ 'Achternaam(en)' | translate }}"
-                            [(ngModel)]="registration.lastName" />
+                            name="lastName" [(ngModel)]="registration.lastName" #lastName="ngModel"
+                            [ngClass]="{'is-danger': lastName.touched && lastName.hasError('required')}" />
+                        @if (lastName.touched && lastName.hasError('required')) {
+                    <p class="help is-danger" translate>Naam vereist</p>
+                    }
                     </p>
                 </div>
             </div>
@@ -51,8 +63,9 @@
             <div class="field-body">
                 <div class="field has-addons" [ngClass]="{'has-addons': registration.department === 'anders'}">
                     <div class="control">
-                        <div class="select is-fullwidth">
-                            <select [(ngModel)]="registration.department">
+                        <div class="select is-fullwidth" [ngClass]="{'is-danger': departmentInvalid}">
+                            <select [(ngModel)]="registration.department" name="department" #department="ngModel"
+                                (focus)="departmentInvalid=false">
                                 <option value="---">&mdash;</option>
                                 @for (department of departments$ | async; track department.slug) {
                                 <option [value]="department.slug">{{department.title}}</option>
@@ -63,8 +76,13 @@
                     </div>
                     @if (registration.department === 'anders') {
                     <p class="control">
-                        <input class="input" type="text" placeholder="{{ 'afdelingsnaam' | translate }}" />
+                        <input class="input" type="text" placeholder="{{ 'afdelingsnaam' | translate }}"
+                            name="departmentOther" [(ngModel)]="departmentOther" required
+                            (focus)="departmentInvalid=false" [ngClass]="{'is-danger': departmentInvalid}" />
                     </p>
+                    }
+                    @if (departmentInvalid) {
+                    <p class="help is-danger" translate>Afdeling vereist</p>
                     }
                 </div>
             </div>
@@ -77,8 +95,13 @@
             <div class="field-body">
                 <div class="field">
                     <p class="control">
-                        <input required class="input" type="email" placeholder="{{ 'E-mailadres' | translate }}" [(ngModel)]="registration.email" />
+                        <input required class="input" type="email" email placeholder="{{ 'E-mailadres' | translate }}"
+                            name="email" [(ngModel)]="registration.email" #email="ngModel"
+                            [ngClass]="{'is-danger': email.touched && !email.valid}" />
                     </p>
+                    @if (email.touched && !email.valid) {
+                    <p class="help is-danger" translate>Geldig e-mailadres vereist</p>
+                    }
                 </div>
             </div>
         </label>
@@ -101,28 +124,28 @@
             <div class="field-body">
                 <div class="field has-addons">
                     <p class="control">
-                        <button class="button" (click)="updatePriority(priority.session.pk, priority.priority - 1)"
-                            [disabled]="first">
+                        <button class="button" type="button"
+                            (click)="updatePriority(priority.session.pk, priority.priority - 1)" [disabled]="first">
                             <span class="icon is-small">
                                 <fa-icon [icon]="faChevronUp"></fa-icon>
                             </span>
                         </button>
                     </p>
                     <p class="control">
-                        <button class="button" (click)="updatePriority(priority.session.pk, priority.priority + 1)"
-                            [disabled]="last">
+                        <button class="button" type="button"
+                            (click)="updatePriority(priority.session.pk, priority.priority + 1)" [disabled]="last">
                             <span class="icon is-small">
                                 <fa-icon [icon]="faChevronDown"></fa-icon>
                             </span>
                         </button>
                     </p>
                     <p class="control">
-                        <button class="button">
+                        <button class="button" type="button">
                             {{priority.session.title || ('registration.surprise' | translate) }}
                         </button>
                     </p>
                     <p class="control">
-                        <button class="button" (click)="remove(priority.session.pk)">
+                        <button class="button" type="button" (click)="remove(priority.session.pk)">
                             <span class="icon is-small">
                                 <fa-icon [icon]="faTimes"></fa-icon>
                             </span>
@@ -140,8 +163,8 @@
             <div class="field-body">
                 <div class="field has-addons">
                     <div class="control is-expanded">
-                        <div class="select is-fullwidth">
-                            <select [(ngModel)]="selectedSession">
+                        <div class="select is-fullwidth" [ngClass]="{'is-danger': choiceInvalid}">
+                            <select [(ngModel)]="selectedSession" name="session">
                                 <option value="0">» {{ 'registration.surprise' | translate }}</option>
                                 @for (session of sessions$ | async; track session.pk) {
                                 <option [value]="session.pk">{{session.title}}
@@ -152,9 +175,13 @@
                                 }
                             </select>
                         </div>
+                        @if (choiceInvalid) {
+                        <p class="help is-danger" translate>Keuze vereist</p>
+                        }
                     </div>
                     <p class="control">
-                        <button class="button" (click)="add()" translate>Toevoegen</button>
+                        <button type="button" class="button" (click)="add()" [ngClass]="{'is-danger': choiceInvalid}"
+                            translate>Toevoegen</button>
                     </p>
                 </div>
             </div>
@@ -167,7 +194,8 @@
             <div class="field-body">
                 <div class="field">
                     <p class="control">
-                        <textarea class="textarea" type="text" placeholder="{{ 'Opmerkingen' | translate }}" [(ngModel)]="registration.notes" ></textarea>
+                        <textarea class="textarea" type="text" placeholder="{{ 'Opmerkingen' | translate }}"
+                            name="notes" [(ngModel)]="registration.notes"></textarea>
                     </p>
                 </div>
             </div>
@@ -179,7 +207,7 @@
             <div class="field-body">
                 <div class="field">
                     <p class="control">
-                        <input class="input" type="text" [(ngModel)]="registration.reason"  />
+                        <input class="input" type="text" [(ngModel)]="registration.reason" name="reason" />
                     </p>
                     <p class="help" translate>(optioneel)</p>
                 </div>
@@ -192,10 +220,12 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <button class="button is-primary" translate>Verstuur!</button>
+                        <button [disabled]="!form.form.valid" type="submit" class="button is-primary"
+                            [ngClass]="{'is-loading': submitting}" translate>Verstuur!</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>
+}

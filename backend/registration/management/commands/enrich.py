@@ -12,6 +12,7 @@ from registration.models import (
     ExchangeSessionDescription,
     Mail,
     Person,
+    get_team_str,
 )
 
 DEFAULT_LANGUAGE = "nl"
@@ -44,7 +45,7 @@ class Command(BaseCommand):
 
     def enrich_data(self, filepath: str) -> Tuple[List[List[str]], List[str]]:
         output: List[Dict[str, str]] = []
-        team = self.get_team_str()
+        team = get_team_str()
         with open(filepath, mode="r", encoding="utf-8-sig") as csv_file:
             csv_reader = csv.DictReader(csv_file, delimiter=";")
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Department, ExchangeSession, Language } from '../models';
-import { BehaviorSubject, combineLatestWith, map } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, lastValueFrom, map } from 'rxjs';
 import { BackendService } from './backend.service';
 import { LanguageService } from './language.service';
 
@@ -43,7 +44,10 @@ export class RegistrationService {
             return this.sessionsByLanguage(sessions, language);
         }));
 
-    constructor(private backend: BackendService, private languageService: LanguageService) {
+    constructor(
+        private backend: BackendService,
+        private languageService: LanguageService,
+        private http: HttpClient) {
         this.backend.get('current_exchange').then((exchange: Exchange) => {
             this.deadline.next(new Date(exchange.enrollment_deadline));
             this.languageService.current$.subscribe(language => {
@@ -100,6 +104,22 @@ export class RegistrationService {
             ...department,
             title: this.departmentTitle(department)
         }));
+    }
+
+    async register(registration: {
+        sessionPriorities: ExchangeSessionPriority[];
+        department: string;
+        firstName: string;
+        tussenvoegsel: string;
+        lastName: string;
+        email: string;
+        notes: string;
+        reason: string;
+        language: string;
+    }) {
+        const baseUrl = await this.backend.getApiUrl();
+        const url: string = encodeURI(`${baseUrl}register/`);
+        return await lastValueFrom(this.http.post(url, registration));
     }
 
     /**
