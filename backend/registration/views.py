@@ -72,7 +72,7 @@ def available_sessions(request):
                 "sessionCount": session.session_count,
                 "full": (
                     Registration.objects.filter(session=session, priority=1).count()
-                    >= session.participants_max
+                    >= session.participants_max * session.session_count
                 ),
             }
         )
@@ -162,6 +162,9 @@ def register(request: Request):
     person.user.save()
 
     exchange = Exchange.objects.get(active=True)
+
+    # registering again? replace any existing registrations on this exchange
+    Registration.objects.filter(requestor=person, exchange=exchange).delete()
 
     registrations: List[Registration] = []
     for sp in request.data["sessionPriorities"]:
