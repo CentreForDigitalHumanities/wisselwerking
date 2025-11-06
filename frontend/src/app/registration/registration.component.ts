@@ -56,16 +56,10 @@ export class RegistrationComponent implements OnDestroy {
                 this.sessionPriorities = s;
             })
         );
-        this.initLanguage();
     }
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
-    }
-
-    private async initLanguage() {
-        const languageInfo = await this.languageService.get();
-        this.currentLanguage = languageInfo.current || this.localeId;
     }
 
     setLanguage(language: Language) {

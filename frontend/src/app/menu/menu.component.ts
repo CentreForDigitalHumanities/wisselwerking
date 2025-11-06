@@ -1,9 +1,10 @@
-import { Component, LOCALE_ID, Inject, OnInit, NgZone, afterRender } from '@angular/core';
+import { Component, LOCALE_ID, Inject, OnInit, NgZone, afterRender, OnDestroy } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective } from '@ngx-translate/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGlobe, faSync } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 import { animations, showState } from '../animations';
 import { DarkModeToggleComponent } from '../dark-mode-toggle/dark-mode-toggle.component';
 import { LanguageInfo, LanguageService } from '../services/language.service';
@@ -17,7 +18,7 @@ import { Language } from '../models';
     standalone: true,
     imports: [CommonModule, RouterLink, FontAwesomeModule, DarkModeToggleComponent, TranslateDirective]
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, OnDestroy {
     burgerShow: showState = 'show';
     burgerActive = false;
     currentLanguage: string;
@@ -31,12 +32,18 @@ export class MenuComponent implements OnInit {
      */
     languages?: LanguageInfo['supported'];
 
+    subscription: Subscription;
+
     constructor(
         @Inject(DOCUMENT) private document: Document,
         @Inject(LOCALE_ID) private localeId: string,
         private ngZone: NgZone,
         private languageService: LanguageService) {
         this.currentLanguage = this.localeId;
+
+        this.subscription = this.languageService.current$.subscribe(lang => {
+            this.currentLanguage = lang;
+        });
 
         // Using the DOM API to only render on the browser instead of on the server
         afterRender(() => {
@@ -53,6 +60,10 @@ export class MenuComponent implements OnInit {
         const languageInfo = await this.languageService.get();
         this.currentLanguage = languageInfo.current || this.localeId;
         this.languages = languageInfo.supported;
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     toggleBurger() {

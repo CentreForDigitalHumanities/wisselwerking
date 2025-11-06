@@ -29,7 +29,7 @@ export class LanguageService {
         const response: {
             current: Language,
             supported: [Language, string][]
-        } = await this.backendService.get('i18n')
+        } = await this.backendService.get('i18n', false);
 
         this.translateService.use(response.current);
 
