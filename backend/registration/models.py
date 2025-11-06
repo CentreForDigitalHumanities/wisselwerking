@@ -349,8 +349,8 @@ class Registration(models.Model):
     )
     priority = models.IntegerField()
     date_time = models.DateTimeField()
-    notes = models.TextField()
-    reason = models.CharField()
+    notes = models.TextField(blank=True)
+    reason = models.CharField(blank=True)
 
 
     def save(self, *args, **kwargs):

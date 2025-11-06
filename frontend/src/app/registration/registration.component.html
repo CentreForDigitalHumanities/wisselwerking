@@ -35,8 +35,8 @@
                     <p class="control">
                         <input required class="input" type="text" placeholder="{{ 'Voornaam' | translate }}"
                             name="firstName" [(ngModel)]="registration.firstName" #firstName="ngModel"
-                            [ngClass]="{'is-danger': firstName.touched && firstName.hasError('required')}" />
-                        @if (firstName.touched && firstName.hasError('required')) {
+                            [ngClass]="{'is-danger': firstName.dirty && firstName.hasError('required')}" />
+                        @if (firstName.dirty && firstName.hasError('required')) {
                     <p class="help is-danger" translate>Naam vereist</p>
                     }
                     </p>
@@ -47,8 +47,8 @@
                     <p class="control is-expanded">
                         <input required class="input" type="text" placeholder="{{ 'Achternaam(en)' | translate }}"
                             name="lastName" [(ngModel)]="registration.lastName" #lastName="ngModel"
-                            [ngClass]="{'is-danger': lastName.touched && lastName.hasError('required')}" />
-                        @if (lastName.touched && lastName.hasError('required')) {
+                            [ngClass]="{'is-danger': lastName.dirty && lastName.hasError('required')}" />
+                        @if (lastName.dirty && lastName.hasError('required')) {
                     <p class="help is-danger" translate>Naam vereist</p>
                     }
                     </p>
@@ -97,9 +97,9 @@
                     <p class="control">
                         <input required class="input" type="email" email placeholder="{{ 'E-mailadres' | translate }}"
                             name="email" [(ngModel)]="registration.email" #email="ngModel"
-                            [ngClass]="{'is-danger': email.touched && !email.valid}" />
+                            [ngClass]="{'is-danger': email.dirty && !email.valid}" #emailInput />
                     </p>
-                    @if (email.touched && !email.valid) {
+                    @if (email.dirty && !email.valid) {
                     <p class="help is-danger" translate>Geldig e-mailadres vereist</p>
                     }
                 </div>

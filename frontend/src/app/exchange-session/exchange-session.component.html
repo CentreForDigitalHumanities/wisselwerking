@@ -21,9 +21,19 @@
         <wsl-program-detail-line label="{{'Locatie' | translate}}">
             {{location}}
         </wsl-program-detail-line>
-        @if (contact) {
+        @if (contact.length) {
         <wsl-program-detail-line label="{{'Contact' | translate}}">
-            {{contact}}
+            @for (item of contact; track item.name) {
+                @if (!$first) {
+                    &middot;
+                }
+                @if (item.url) {
+                    <a href="{{item.url}}" target="_blank">{{item.name}}</a>
+                }
+                @else {
+                    {{item.name}}
+                }
+            }
         </wsl-program-detail-line>
         }
     </blockquote>

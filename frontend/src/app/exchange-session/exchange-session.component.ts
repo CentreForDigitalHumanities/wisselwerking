@@ -37,7 +37,7 @@ export class ExchangeSessionComponent implements OnChanges, OnDestroy {
     languages: string = '';
     participantCount: string = '';
     sessionCount: string = '';
-    contact: string = '';
+    contact: { name: string, url: string }[] = [];
     nativeElement: HTMLElement;
 
     unlimitedText = '';
@@ -113,7 +113,10 @@ export class ExchangeSessionComponent implements OnChanges, OnDestroy {
         }
 
         this.languages = languages.sort().map(lang => lang === 'nl' ? this.dutchText : this.englishText).join(` ${this.andText} `);
-        this.contact = this.session.organizers.map(person => person.fullName).sort().join('; ');
+        this.contact = this.session.organizers.map(person => ({
+            name: person.fullName,
+            url: person.url
+        })).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
     }
 
     ngOnDestroy(): void {
