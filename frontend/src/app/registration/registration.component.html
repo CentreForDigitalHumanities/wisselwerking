@@ -2,7 +2,8 @@
 <wsl-thank-you [firstName]="registration.firstName"></wsl-thank-you>
 }
 @else {
-<form class="container is-max-desktop" #form="ngForm" (ngSubmit)="form.form.valid && submit()">
+<form class="container is-max-desktop" #form="ngForm"
+    (ngSubmit)="checkValidation(form.form) && form.form.valid && submit()">
     <h1 class="title" translate="registration.title"></h1>
 
     <p>{{ 'registration.explain' | translate }}</p>
@@ -75,17 +76,18 @@
                         </div>
                     </div>
                     @if (registration.department === 'anders') { -->
-                    <div class="field">
+                <div class="field">
                     <p class="control">
                         <input class="input" type="text" placeholder="{{ 'Afdelingsnaam' | translate }}"
                             name="departmentOther" [(ngModel)]="departmentOther" required
                             (focus)="departmentInvalid=false" [ngClass]="{'is-danger': departmentInvalid}" />
                     </p>
-                    </div>
-                    <!-- }
                     @if (departmentInvalid) {
                     <p class="help is-danger" translate>Afdeling vereist</p>
                     }
+                </div>
+                <!-- }
+
                 </div> -->
             </div>
         </label>
@@ -222,8 +224,8 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <button [disabled]="!form.form.valid" type="submit" class="button is-primary"
-                            [ngClass]="{'is-loading': submitting}" translate>Verstuur!</button>
+                        <button type="submit" class="button is-primary" [ngClass]="{'is-loading': submitting}"
+                            translate>Verstuur!</button>
                     </div>
                 </div>
             </div>

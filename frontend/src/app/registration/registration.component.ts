@@ -1,5 +1,5 @@
 import { Component, Inject, LOCALE_ID, OnDestroy } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
@@ -79,17 +79,25 @@ export class RegistrationComponent implements OnDestroy {
         this.registrationService.update(sessionPk, false);
     }
 
-    async submit() {
+    private additionalValidation(): boolean {
         this.choiceInvalid = this.sessionPriorities.length === 0;
 
         if (this.registration.department === '---' ||
             this.registration.department === 'anders' && !(this.departmentOther ?? '').trim()) {
             this.departmentInvalid = true;
-            return;
+            return false;
         }
         this.departmentInvalid = false;
 
         if (this.choiceInvalid || this.departmentInvalid) {
+            return false;
+        }
+
+        return true;
+    }
+
+    async submit() {
+        if (!this.additionalValidation()) {
             return;
         }
 
@@ -105,5 +113,12 @@ export class RegistrationComponent implements OnDestroy {
         });
 
         this.thankYou = true;
+    }
+
+    checkValidation(formGroup: FormGroup) {
+        for (const control of Object.values(formGroup.controls)) {
+            control.markAsDirty();
+        }
+        return this.additionalValidation();
     }
 }

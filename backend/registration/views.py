@@ -72,7 +72,7 @@ def available_sessions(request):
                 "sessionCount": session.session_count,
                 "full": (
                     Registration.objects.filter(session=session, priority=1).count()
-                    >= session.participants_max * session.session_count
+                    >= session.participants_max * session.session_count + 1 # just in case the first can't make it
                 ),
             }
         )
