@@ -61,7 +61,7 @@
                 <span class="label" translate>Afdeling</span>
             </div>
             <div class="field-body">
-                <div class="field has-addons" [ngClass]="{'has-addons': registration.department === 'anders'}">
+                <!-- <div class="field has-addons" [ngClass]="{'has-addons': registration.department === 'anders'}">
                     <div class="control">
                         <div class="select is-fullwidth" [ngClass]="{'is-danger': departmentInvalid}">
                             <select [(ngModel)]="registration.department" name="department" #department="ngModel"
@@ -74,17 +74,19 @@
                             </select>
                         </div>
                     </div>
-                    @if (registration.department === 'anders') {
+                    @if (registration.department === 'anders') { -->
+                    <div class="field">
                     <p class="control">
-                        <input class="input" type="text" placeholder="{{ 'afdelingsnaam' | translate }}"
+                        <input class="input" type="text" placeholder="{{ 'Afdelingsnaam' | translate }}"
                             name="departmentOther" [(ngModel)]="departmentOther" required
                             (focus)="departmentInvalid=false" [ngClass]="{'is-danger': departmentInvalid}" />
                     </p>
-                    }
+                    </div>
+                    <!-- }
                     @if (departmentInvalid) {
                     <p class="help is-danger" translate>Afdeling vereist</p>
                     }
-                </div>
+                </div> -->
             </div>
         </label>
 

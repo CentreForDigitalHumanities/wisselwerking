@@ -124,36 +124,38 @@ def register(request: Request):
         person.user = user
 
     # make sure the department exists
-    department_slug = request.data["department"]
-    try:
-        department = Department.objects.get(slug=department_slug)
-    except Department.DoesNotExist:
-        department = None
+    # TODO: fix the list of departments
+    # department_slug = request.data["department"]
+    # try:
+    #     department = Department.objects.get(slug=department_slug)
+    # except Department.DoesNotExist:
+    #     department = None
 
-    if department is None:
-        try:
-            department = DepartmentDescription.objects.get(
-                name=department_slug
-            ).department
-        except DepartmentDescription.DoesNotExist:
-            pass
+    # if department is None:
+    #     try:
+    #         department = DepartmentDescription.objects.get(
+    #             name=department_slug
+    #         ).department
+    #     except DepartmentDescription.DoesNotExist:
+    #         pass
 
-    if not department:
-        department = Department()
-        department.slug = department_slug
-        department.save()
+    # if not department:
+    #     department = Department()
+    #     department.slug = department_slug
+    #     department.save()
 
-        dd = DepartmentDescription()
-        dd.name = department_slug
-        dd.language = language
-        dd.department = department
-        dd.save()
+    #     dd = DepartmentDescription()
+    #     dd.name = department_slug
+    #     dd.language = language
+    #     dd.department = department
+    #     dd.save()
 
+    person.other_affiliation = request.data["department"]
     person.prefix_surname = prefix
     person.language = language
 
-    if not person.departments.contains(department):
-        person.departments.add(department)
+    # if not person.departments.contains(department):
+    #     person.departments.add(department)
 
     person.save()
 

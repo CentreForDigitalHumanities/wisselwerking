@@ -38,7 +38,7 @@ export class RegistrationComponent implements OnDestroy {
         firstName: '',
         tussenvoegsel: '',
         lastName: '',
-        department: '---',
+        department: 'anders', // TODO: have a selection
         email: '',
         notes: '',
         reason: ''
