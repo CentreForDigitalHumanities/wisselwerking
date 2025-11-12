@@ -1,12 +1,12 @@
 import { Component, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateDirective } from '@ngx-translate/core';
-import { combineLatestWith, Subscription } from 'rxjs';
+import { combineLatestWith, Observable, Subscription } from 'rxjs';
 import { faCheck, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ExchangeSessionComponent } from "../exchange-session/exchange-session.component";
-import { ExchangeSession } from '../models';
+import { ExchangeSession, Language } from '../models';
 import { RegistrationService } from '../services/registration.service';
 import { LanguageService } from '../services/language.service';
 
@@ -25,6 +25,7 @@ export class OverviewComponent implements OnDestroy {
     interested: { [pk: ExchangeSession['pk']]: boolean } = {};
     interestedList: ExchangeSession[] = [];
 
+    language: Language = 'nl';
     deadline?: string;
     sessions?: ExchangeSession[];
 
@@ -35,11 +36,16 @@ export class OverviewComponent implements OnDestroy {
     @ViewChildren(ExchangeSessionComponent)
     sessionElements?: QueryList<ExchangeSessionComponent>;
 
-    constructor(private registrationService: RegistrationService, private languageService: LanguageService, activatedRoute: ActivatedRoute) {
+    constructor(private registrationService: RegistrationService,
+        private languageService: LanguageService,
+        activatedRoute: ActivatedRoute,
+        private router: Router) {
         const lang = activatedRoute.snapshot.queryParams['lang'];
         if (['nl', 'en'].includes(lang)) {
             this.languageService.set(lang);
         }
+        this.subscriptions.add(
+            this.languageService.current$.subscribe(language => this.language = language));
         this.subscriptions.add(
             this.languageService.current$.pipe(
                 combineLatestWith(this.registrationService.deadline$)).subscribe(([language, deadline]) => this.deadline = deadline.toLocaleString(language, {
@@ -94,5 +100,9 @@ export class OverviewComponent implements OnDestroy {
 
     updateList(pk: ExchangeSession['pk'], interested: boolean) {
         this.registrationService.update(pk, interested);
+    }
+
+    setLanguage(language: Language) {
+        this.languageService.set(language);
     }
 }

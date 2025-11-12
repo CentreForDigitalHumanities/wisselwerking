@@ -37,6 +37,28 @@
         }
     </div>
     <div class="column is-4">
+        <div class="box has-background-primary">
+            @if (language === 'en') {
+            <div class="content" style="cursor: pointer" [routerLink]="['/overview']" [queryParams]="{'lang': 'nl'}"
+                (click)="setLanguage('nl')">
+                <h2 class="subtitle  has-text-dark">Nederlands</h2>
+                <p class="has-text-dark">
+                    Bekijk de wisselwerkingen in het Nederlands.
+                </p>
+                <a class="button is-dark">Bekijk</a>
+            </div>
+            }
+            @else {
+            <div class="content" style="cursor: pointer" [routerLink]="['/overview']" [queryParams]="{'lang': 'en'}"
+                (click)="setLanguage('en')">
+                <h2 class="subtitle has-text-dark">English</h2>
+                <p class="has-text-dark">
+                    Click here to view the exchanges available in English.
+                </p>
+                <a class="button is-dark">View</a>
+            </div>
+            }
+        </div>
         <div class="box sticky">
             <div class="content">
                 @if (interestedList) {
@@ -50,7 +72,8 @@
                     }
                 </ul>
                 }
-                <a class="button" [routerLink]="['/registration']" translate [ngClass]="{'is-primary': interestedList.length}">Aanmelden</a>
+                <a class="button" [routerLink]="['/registration']" translate
+                    [ngClass]="{'is-primary': interestedList.length}">Aanmelden</a>
             </div>
         </div>
         <div class="scroll-to-top">
