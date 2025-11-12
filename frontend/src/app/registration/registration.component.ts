@@ -33,6 +33,7 @@ export class RegistrationComponent implements OnDestroy {
     departmentInvalid = false;
     submitting = false;
     thankYou = false;
+    error = '';
 
     registration = {
         firstName: '',
@@ -103,16 +104,42 @@ export class RegistrationComponent implements OnDestroy {
 
         this.submitting = true;
 
-        await this.registrationService.register({
+        const data = {
             language: this.currentLanguage,
             ...this.registration,
-            sessionPriorities: this.sessionPriorities,
+            // remove some unneeded data
+            sessionPriorities: this.sessionPriorities.map(
+                sp => ({
+                    ...sp,
+                    session: {
+                        ...sp.session,
+                        organizers: [],
+                        descriptions: []
+                    }
+                })
+            ),
             department: this.registration.department === 'anders'
                 ? this.departmentOther
                 : this.registration.department
-        });
+        };
 
-        this.thankYou = true;
+        try {
+
+            await this.registrationService.register(data);
+
+            this.thankYou = true;
+        }
+        catch (err: any) {
+            this.error = `Something went wrong during the registration.
+Please try again and notify wisselwerking.gw@uu.nl with the following information if this persists.
+
+Error details:
+${err['message'] ?? err}
+
+Your data:
+${JSON.stringify(data, null, 4)}`;
+            this.submitting = false;
+        }
     }
 
     checkValidation(formGroup: FormGroup) {
