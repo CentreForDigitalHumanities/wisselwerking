@@ -120,8 +120,11 @@ def register(request: Request):
         user.last_name = last_name
         user.save()
 
-        person = Person()
-        person.user = user
+        # automatically created
+        person = Person.get_by_email(email)
+        if not person:
+            person = Person()
+            person.user = user
 
     # make sure the department exists
     # TODO: fix the list of departments
