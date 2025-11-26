@@ -302,10 +302,10 @@ class ExchangeSession(models.Model):
             return None
         return " / ".join(subtitles)
 
-    def get_prefer_dutch_name(self):
+    def get_name_by_lang(self, language):
         for description in self.description.all():
             d: ExchangeSessionDescription = description
-            if d.language == "nl":
+            if d.language == language:
                 if d.subtitle:
                     return f"{d.title} {d.subtitle}"
                 if d.title:
@@ -348,6 +348,8 @@ class Registration(models.Model):
         Exchange, on_delete=models.CASCADE
     )
     priority = models.IntegerField()
+    """One-based priority; with 1 being the most priority given
+    """
     date_time = models.DateTimeField()
     notes = models.TextField(blank=True)
     reason = models.CharField(blank=True)

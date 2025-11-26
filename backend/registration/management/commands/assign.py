@@ -22,18 +22,33 @@ class Command(BaseCommand):
         for session in ExchangeSession.objects.filter(exchange=self.exchange):
             session.assigned.clear()
 
-        # this assumes there is ONE registration moment per year
-        registrations = Registration.objects.filter(
-            date_time__year=self.exchange.begin
-        ).order_by("date_time")
+        # get all the registrations
+        registrations = list(
+            Registration.objects.filter(exchange=self.exchange).order_by("date_time")
+        )
 
         # mark everyone as unassigned
         for registration in registrations:
             self.requestors.add(registration.requestor)
             self.unassigned_requestors.add(registration.requestor)
 
+        # the highest priority count is only limited
+        # by how many sessions someone might have requested,
+        # which could be at most the number of available sessions
+        max_priority = 1
+
+        print("Notes from requestors: ")
+        requestor = None # multiple registration per requestor
+        for registration in registrations:
+            if registration.priority > max_priority:
+                max_priority = registration.priority
+            if registration.notes and requestor != registration.requestor:
+                print(f"# {registration.requestor}")
+                print(registration.notes + "\n")
+                requestor = registration.requestor
+
         # first try to give everyone their first pick
-        for priority in (1, 2, 3):
+        for priority in range(1, max_priority + 1):
             for registration in registrations:
                 if registration.priority == priority:
                     self.attempt_placement(registration)
@@ -92,6 +107,7 @@ class Command(BaseCommand):
                 elif session.exchange != self.exchange:
                     raise Exception("Invalid exchange")
                 else:
+                    print(f"Assigned to {session}")
                     break
             except Exception as error:
                 print(type(error))

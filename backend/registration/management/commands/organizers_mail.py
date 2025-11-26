@@ -8,7 +8,6 @@ import os
 from registration.models import (
     Exchange,
     ExchangeSession,
-    ExchangeSessionDescription,
     Mail,
     Person,
     get_team_str,
@@ -41,7 +40,7 @@ class Command(BaseCommand):
                 raise CommandError(f"File {filepath} already exists!")
 
             output, fieldnames = self.mail_info()
-            self.write_data(filepath, fieldnames, output)
+            write_data(filepath, fieldnames, output)
 
     def mail_info(self) -> Tuple[List[List[str]], List[str]]:
         output: List[Dict[str, str]] = []
@@ -62,8 +61,8 @@ class Command(BaseCommand):
             )
             output.append(
                 {
-                    RECEIVERS: ",".join(
-                        self.format_mail_person(organizer) for organizer in organizers
+                    RECEIVERS: ", ".join(
+                        format_mail_person(organizer) for organizer in organizers
                     )
                     or session.department.email,
                     MAIL_SUBJECT: mail_subject,
@@ -73,21 +72,12 @@ class Command(BaseCommand):
 
         return output, [RECEIVERS, MAIL_SUBJECT, MAIL_CONTENT]
 
-    def conjunct(self, language: str, items: List[str]) -> str:
-        if len(items) < 2:
-            return items[0]
-
-        return ", ".join(items[0:-1]) + CONJUNCT[language] + items[-1]
-
-    def format_assigned(self, assigned: List[Person]) -> str:
+    def format_assigned(self, assigned: List[Person], mark_english: bool) -> str:
         output: List[str] = []
         for person in assigned:
-            output.append(f" - {self.format_mail_person(person)}")
+            output.append(f" - {format_mail_person(person)}" + " (communicatie in het Engels)" if mark_english and person.language == "en" else "")
 
         return "\n".join(output)
-
-    def format_mail_person(self, person: Person) -> str:
-        return f"{person.full_name} <{person.email}>"
 
     def get_mail(self, organizers: List[Person]) -> Mail:
         language = DEFAULT_LANGUAGE
@@ -101,14 +91,6 @@ class Command(BaseCommand):
         except Mail.DoesNotExist:
             return Mail.objects.get(type=MAIL_TYPE, language=DEFAULT_LANGUAGE)
 
-    def write_data(
-        self, filepath: str, fieldnames: List[str], enriched: List[Dict[str, str]]
-    ) -> None:
-        with open(filepath, mode="w", encoding="utf-8-sig") as csv_file:
-            csv_writer = csv.DictWriter(csv_file, delimiter=";", fieldnames=fieldnames)
-            csv_writer.writeheader()
-            csv_writer.writerows(enriched)
-
     def prepare_mail(
         self,
         mail: Mail,
@@ -117,16 +99,16 @@ class Command(BaseCommand):
         assigned: List[Person],
         team: str,
     ) -> Tuple[str, str]:
-        choice = self.get_session_title(session, mail.language)
+        choice = session.get_name_by_lang(mail.language)
         if organizers:
-            organizers_names = self.conjunct(
+            organizers_names = conjunct(
                 mail.language,
                 list(organizer.given_names.strip() for organizer in organizers),
             )
         else:
             organizers_names = "organisator"  # TODO: translate
 
-        choice_assignments = self.format_assigned(assigned)
+        choice_assignments = self.format_assigned(assigned, mail.language == "nl")
 
         data = {
             "choice": choice,
@@ -135,25 +117,37 @@ class Command(BaseCommand):
             "choice_assignments": choice_assignments,
             "team": team,
         }
-        return self.enrich_mail(mail.subject, data), self.enrich_mail(mail.text, data)
+        return enrich_mail(mail.subject, data), enrich_mail(mail.text, data)
 
-    def enrich_mail(self, text: str, data: Dict[str, str]) -> str:
-        for key, value in data.items():
-            text = text.replace(f"{{{{{key}}}}}", value)
 
-        return text
+def conjunct(language: str, items: List[str]) -> str:
+    if len(items) < 2:
+        return items[0]
 
-    def get_team_str(self) -> str:
-        team = Group.objects.get(name="Team")
-        persons = Person.objects.filter(user__groups=team).order_by("user__first_name")
-        return ", ".join(person.full_name for person in persons)
+    return ", ".join(items[0:-1]) + CONJUNCT[language] + items[-1]
 
-    def get_session_title(self, session: ExchangeSession, language: str) -> str:
-        try:
-            return ExchangeSessionDescription.objects.get(
-                exchange=session, language=language
-            ).title
-        except ExchangeSessionDescription.DoesNotExist:
-            return ExchangeSessionDescription.objects.get(
-                exchange=session, language=DEFAULT_LANGUAGE
-            ).title
+
+def format_mail_person(person: Person) -> str:
+    return f"{person.full_name} <{person.email}>"
+
+
+def write_data(
+    filepath: str, fieldnames: List[str], enriched: List[Dict[str, str]]
+) -> None:
+    with open(filepath, mode="w", encoding="utf-8-sig") as csv_file:
+        csv_writer = csv.DictWriter(csv_file, delimiter=";", fieldnames=fieldnames)
+        csv_writer.writeheader()
+        csv_writer.writerows(enriched)
+
+
+def enrich_mail(text: str, data: Dict[str, str]) -> str:
+    for key, value in data.items():
+        text = text.replace(f"{{{{{key}}}}}", value)
+
+    return text
+
+
+def get_team_str() -> str:
+    team = Group.objects.get(name="Team")
+    persons = Person.objects.filter(user__groups=team).order_by("user__first_name")
+    return ", ".join(person.full_name for person in persons)

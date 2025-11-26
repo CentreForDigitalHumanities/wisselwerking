@@ -80,7 +80,7 @@ class Command(BaseCommand):
                         HISTORY_HOW_MANY: how_many,
                         HISTORY_YEARS: f"{session.exchange.begin}-{session.exchange.end}",
                         ENROLLMENT_DEPT: person.get_affiliation(),
-                        ASSIGNED_CHOICE: session.get_prefer_dutch_name(),
+                        ASSIGNED_CHOICE: session.get_name_by_lang("nl"),
                     }
                 )
 
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                 years = f"{session.exchange.begin}-{session.exchange.end}"
                 participant_id = person.id
                 enrollment = Enrollment(
-                    session.get_prefer_dutch_name(),
+                    session.get_name_by_lang("nl"),
                     cast(Person, person).get_affiliation(),
                 )
                 try:
