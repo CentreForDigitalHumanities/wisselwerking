@@ -67,7 +67,7 @@ class Command(BaseCommand):
         print(f"Empty sessions: {len(empty_sessions)}")
         for session in empty_sessions:
             print(
-                f" - {session} (pk={session.pk}; max_participants={session.participants_max})"
+                f" - {session} (pk={session.pk}; max_participants={session.participants_max*session.session_count})"
             )
 
         if len(too_low_sessions) > 0:
@@ -83,13 +83,19 @@ class Command(BaseCommand):
         for person in self.assigned_random:
             self.assign_random(person)
 
+        print(f"Unassigned persons left: {len(self.unassigned_requestors)}")
+        for person in self.unassigned_requestors:
+            print(f"{person}")
+
+
     def get_capacity(self, session_pk: Any) -> int:
         try:
             return self.capacities[session_pk]
         except KeyError:
-            capacity = self.capacities[session_pk] = ExchangeSession.objects.get(
+            session = ExchangeSession.objects.get(
                 pk=session_pk
-            ).participants_max
+            )
+            capacity = self.capacities[session_pk] = session.participants_max * session.session_count
             self.session_counts[session_pk] = 0
             return capacity
 

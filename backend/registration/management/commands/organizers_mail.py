@@ -75,7 +75,7 @@ class Command(BaseCommand):
     def format_assigned(self, assigned: List[Person], mark_english: bool) -> str:
         output: List[str] = []
         for person in assigned:
-            output.append(f" - {format_mail_person(person)}" + " (communicatie in het Engels)" if mark_english and person.language == "en" else "")
+            output.append(f" - {format_mail_person(person)}" + (" (communicatie in het Engels)" if mark_english and person.language == "en" else ""))
 
         return "\n".join(output)
 

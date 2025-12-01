@@ -49,6 +49,5 @@ From: wisselwerking.gw@uu.nl
 Subject: {subject}
 X-Unsent: 1
 
-
-{content}
+{content.strip()}
 """
