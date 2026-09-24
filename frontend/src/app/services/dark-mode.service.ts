@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable, afterRender } from '@angular/core';
+
+import { Inject, Injectable, afterEveryRender, DOCUMENT } from '@angular/core';
 import { BehaviorSubject, Observable, distinctUntilChanged } from 'rxjs';
 
 /**
@@ -25,7 +25,7 @@ export class DarkModeService {
     constructor(@Inject(DOCUMENT) private document: Document) {
         this.theme = new BehaviorSubject<Theme>(this.get() ?? this.system);
         this.theme$ = this.theme.pipe(distinctUntilChanged());
-        afterRender(() => {
+        afterEveryRender(() => {
             this.initialize();
         });
     }

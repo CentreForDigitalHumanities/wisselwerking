@@ -1,5 +1,5 @@
-import { Component, Inject, afterRender } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, Inject, afterEveryRender, DOCUMENT } from '@angular/core';
+
 import { RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import messagesNL from '../../locale/messages.nl.json';
@@ -25,7 +25,7 @@ export class AppComponent {
         translate.setFallbackLang('nl');
 
         // Using the DOM API to only render on the browser instead of on the server
-        afterRender(() => {
+        afterEveryRender(() => {
             const style = this.document.createElement('link');
             style.rel = 'stylesheet';
             this.document.head.append(style);

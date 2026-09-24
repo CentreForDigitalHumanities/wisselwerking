@@ -1,5 +1,5 @@
-import { Component, LOCALE_ID, Inject, OnInit, NgZone, afterRender, OnDestroy } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, LOCALE_ID, Inject, OnInit, NgZone, afterEveryRender, OnDestroy, DOCUMENT } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateDirective } from '@ngx-translate/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -46,7 +46,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         });
 
         // Using the DOM API to only render on the browser instead of on the server
-        afterRender(() => {
+        afterEveryRender(() => {
             const window = this.document.defaultView;
             const isDesktop = window ? window.matchMedia("screen and (min-width: 1024px)").matches : true;
             this.burgerShow = isDesktop ? 'show' : 'hide';
