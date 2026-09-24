@@ -100,14 +100,15 @@
                 "extract-i18n": {
                     "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
                     "options": {
-                        "buildTarget": "wisselwerking:build",
-                        "browserTarget": "wisselwerking:build",
-                        "format": "xlf",
-                        "outputPath": "locale",
-                        "includeContext": true,
-                        "targetFiles": [
-                            "messages.en.xlf"
-                        ]
+                      "buildTarget": "wisselwerking:build",
+                      "format": "xlf",
+                      "outputPath": "locale",
+                      "includeContext": true,
+                      "targetFiles": [
+                        "messages.en.xlf"
+                      ],
+                      "prettyNestedTags": true,
+                      "sort": "stableAppendNew"
                     }
                 },
                 "test": {

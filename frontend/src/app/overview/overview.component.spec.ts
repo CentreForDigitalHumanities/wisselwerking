@@ -1,8 +1,9 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverviewComponent } from './overview.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('OverviewComponent', () => {
     let component: OverviewComponent;
@@ -10,9 +11,9 @@ describe('OverviewComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            imports: [OverviewComponent, HttpClientTestingModule, TranslateModule.forRoot()],
-            providers: [provideRouter([])]
-        })
+    imports: [OverviewComponent, TranslateModule.forRoot()],
+    providers: [provideRouter([]), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
             .compileComponents();
     }));
 
