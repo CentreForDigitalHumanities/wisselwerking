@@ -18,11 +18,12 @@
             "prefix": "wsl",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist",
+                        "outputPath": {
+                          "base": "dist"
+                        },
                         "index": "src/index.html",
-                        "main": "src/main.ts",
                         "polyfills": [
                             "zone.js"
                         ],
@@ -47,7 +48,8 @@
                             }
                         ],
                         "scripts": [],
-                        "baseHref": "/"
+                        "baseHref": "/",
+                        "browser": "src/main.ts"
                     },
                     "configurations": {
                         "production": {
@@ -89,7 +91,7 @@
                             "buildTarget": "wisselwerking:build:development"
                         },
                         "en": {
-                            "browserTarget": "wisselwerking:build:en"
+                          "buildTarget": "wisselwerking:build:en"
                         }
                     },
                     "defaultConfiguration": "development",

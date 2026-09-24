@@ -14,7 +14,6 @@ import { LanguageService } from '../services/language.service';
     selector: 'wsl-overview',
     templateUrl: './overview.component.html',
     styleUrls: ['./overview.component.scss'],
-    standalone: true,
     imports: [CommonModule, FontAwesomeModule, RouterLink, ExchangeSessionComponent, TranslateDirective]
 })
 export class OverviewComponent implements OnDestroy {

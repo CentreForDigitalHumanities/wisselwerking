@@ -9,7 +9,6 @@ import { ProgramDetailLineComponent } from '../program-detail-line/program-detai
 
 @Component({
     selector: 'wsl-exchange-session',
-    standalone: true,
     imports: [CommonModule, ProgramDetailLineComponent, FontAwesomeModule, TranslateDirective, TranslatePipe],
     templateUrl: './exchange-session.component.html',
     styleUrl: './exchange-session.component.scss'

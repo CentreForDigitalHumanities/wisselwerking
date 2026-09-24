@@ -6,7 +6,6 @@ import { DarkModeService } from '../services/dark-mode.service';
 
 @Component({
     selector: 'wsl-dark-mode-toggle',
-    standalone: true,
     imports: [FontAwesomeModule],
     templateUrl: './dark-mode-toggle.component.html',
     styleUrl: './dark-mode-toggle.component.scss'

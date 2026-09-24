@@ -9,8 +9,7 @@ import { DarkModeService } from '../services/dark-mode.service';
     selector: 'wsl-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.component.scss'],
-    imports: [TranslatePipe, TranslateDirective],
-    standalone: true
+    imports: [TranslatePipe, TranslateDirective]
 })
 export class FooterComponent implements OnDestroy {
     environment = environment;

@@ -10,7 +10,6 @@ import { DarkModeService } from './services/dark-mode.service';
 
 @Component({
     selector: 'wsl-root',
-    standalone: true,
     imports: [RouterOutlet, MenuComponent, FooterComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'

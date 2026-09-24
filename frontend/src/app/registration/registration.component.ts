@@ -12,7 +12,6 @@ import { ThankYouComponent } from "../thank-you/thank-you.component";
 
 @Component({
     selector: 'wsl-registration',
-    standalone: true,
     imports: [CommonModule, FontAwesomeModule, FormsModule, TranslatePipe, TranslateDirective, ReactiveFormsModule, ThankYouComponent],
     templateUrl: './registration.component.html',
     styleUrl: './registration.component.scss'
