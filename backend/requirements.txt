@@ -49,5 +49,5 @@ typing-extensions==4.15.0
     # via
     #   asgiref
     #   exceptiongroup
-urllib3==2.2.2
+urllib3==2.6.0
     # via django-revproxy
