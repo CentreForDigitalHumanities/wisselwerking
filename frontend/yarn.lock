@@ -2294,27 +2294,6 @@
     "@napi-rs/nice-win32-ia32-msvc" "1.1.1"
     "@napi-rs/nice-win32-x64-msvc" "1.1.1"
 
-"@ngrx/effects@^19.2.1":
-  version "19.2.1"
-  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-19.2.1.tgz#e9ee714deb7f8963b7d4b22bf21e06b2c680cae9"
-  integrity sha512-RZmTPOIC/h4JtySxh4Oa0ReQomxv4/+2er9vJ2IiuPDgUo7oE83iKZvB8uZUW/8y9dcu+MB6u0VjWM6rcbpCcA==
-  dependencies:
-    tslib "^2.0.0"
-
-"@ngrx/operators@^19.2.1":
-  version "19.2.1"
-  resolved "https://registry.yarnpkg.com/@ngrx/operators/-/operators-19.2.1.tgz#69956f9f23648ae2e73240623297a306418d69f3"
-  integrity sha512-umjSny5nWe7+a3XPeyMfE8vjhXD4ec6nA/KSV7bQA43Yt3eW8cQQr5ng7UZOkC0rbqcBGpSsJPt5thTeXiMXQg==
-  dependencies:
-    tslib "^2.3.0"
-
-"@ngrx/store@^19.2.1":
-  version "19.2.1"
-  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-19.2.1.tgz#8599cfdd167158952e7adba85e2790777a0e50a6"
-  integrity sha512-c5vQId7YoAhM0y4HASrz9mtLju+28vJspd6OBlhPbBlSae8GN8m9S/oav+8LaSY19yh95cZ5B/nMcLNNWgL/jA==
-  dependencies:
-    tslib "^2.0.0"
-
 "@ngtools/webpack@19.2.27":
   version "19.2.27"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-19.2.27.tgz#27f3bec4822140c393f1b2a2a3a191942b80db02"
@@ -2617,18 +2596,6 @@
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
-
-"@primeuix/styled@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@primeuix/styled/-/styled-0.3.2.tgz#a6093e81a66fc78b915b5e8d998cc73c2c47a1dc"
-  integrity sha512-ColZes0+/WKqH4ob2x8DyNYf1NENpe5ZguOvx5yCLxaP8EIMVhLjWLO/3umJiDnQU4XXMLkn2mMHHw+fhTX/mw==
-  dependencies:
-    "@primeuix/utils" "^0.3.2"
-
-"@primeuix/utils@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@primeuix/utils/-/utils-0.3.2.tgz#dbf92f6b5e18abe214f592a0b51bf4ca02a1f808"
-  integrity sha512-B+nphqTQeq+i6JuICLdVWnDMjONome2sNz0xI65qIOyeB4EF12CoKRiCsxuZ5uKAkHi/0d1LqlQ9mIWRSdkavw==
 
 "@rollup/rollup-android-arm-eabi@4.59.0":
   version "4.59.0"
@@ -6834,15 +6801,6 @@ postcss@^8.4.49, postcss@^8.5.3:
     nanoid "^3.3.18"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
-
-primeng@^19.1.4:
-  version "19.1.4"
-  resolved "https://registry.yarnpkg.com/primeng/-/primeng-19.1.4.tgz#17cc602e947d930aafcd3626b3cc1188e0080f53"
-  integrity sha512-l5l8SHTxopxxyyXZx1BvbQ11P7ndLv2Qp8H5k2/+OCi65jTZn4xmtrBDGDs7k2K5UMHSqAnGjBgtpbckyqQETg==
-  dependencies:
-    "@primeuix/styled" "^0.3.2"
-    "@primeuix/utils" "^0.3.2"
-    tslib "^2.3.0"
 
 proc-log@^5.0.0:
   version "5.0.0"
