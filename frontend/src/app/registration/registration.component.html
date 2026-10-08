@@ -1,6 +1,9 @@
 @if (thankYou) {
 <wsl-thank-you [firstName]="registration.firstName"></wsl-thank-you>
 }
+@else if (!(open$ | async)) {
+{{ 'registration.closed' | translate }}
+}
 @else {
 <form class="container is-max-desktop" #form="ngForm"
     (ngSubmit)="checkValidation(form.form) && form.form.valid && submit()">

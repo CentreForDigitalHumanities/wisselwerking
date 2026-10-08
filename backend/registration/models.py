@@ -253,6 +253,9 @@ class Exchange(models.Model):
     begin = models.IntegerField(unique=True)
     end = models.IntegerField(unique=True)
     enrollment_deadline = models.DateField()
+
+    open = models.BooleanField(default=False)
+    open.description = "Is the enrollment open?"
     active = models.BooleanField()
 
     def __str__(self):

@@ -68,12 +68,26 @@
                 </p>
                 <ul>
                     @for (session of interestedList; track session.pk) {
-                    <li>{{session.title}}</li>
+                    <li>
+                        @if (session.title) {
+                        {{session.title}}
+                        }
+                        @else {
+                        <em>
+                            {{'registration.surprise' | translate}}
+                        </em>
+                        }
+                    </li>
                     }
                 </ul>
                 }
+                @if (!(open | async)) {
+                <em>{{ 'registration.closed' | translate }}</em>
+                }
+                @else {
                 <a class="button" [routerLink]="['/registration']" translate
                     [ngClass]="{'is-primary': interestedList.length}">Aanmelden</a>
+                }
             </div>
         </div>
         <div class="scroll-to-top">

@@ -26,6 +26,7 @@ export class RegistrationComponent implements OnDestroy {
     sessions$ = this.registrationService.sessions$;
     sessionPriorities$ = this.registrationService.sessionPriorities$;
     departments$ = this.registrationService.departments();
+    open$ = this.registrationService.open$;
     selectedSession = 0;
     departmentOther = '';
     choiceInvalid = false;

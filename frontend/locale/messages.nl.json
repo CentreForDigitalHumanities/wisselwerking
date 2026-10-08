@@ -16,6 +16,7 @@
         "explain": "Geef je eerste en eventueel ook tweede of derde keuze door. Je inschrijving is pas definitief als je een bevestiging hebt ontvangen van de aanbieder van de wisselwerking. Houd er rekening mee dat je keuze vol kan zijn.",
         "surprise": "Verras mij",
         "thankyou": "Bedankt!",
-        "thankyou_message": "Leuk dat je je hebt aangemeld voor een Wisselwerking, {{firstName}}! Je ontvangt per e-mail een bevestiging van je aanmelding."
+        "thankyou_message": "Leuk dat je je hebt aangemeld voor een Wisselwerking, {{firstName}}! Je ontvangt per e-mail een bevestiging van je aanmelding.",
+        "closed": "Aanmeldformulier is gesloten"
     }
 }

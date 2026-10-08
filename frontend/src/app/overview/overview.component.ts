@@ -1,8 +1,8 @@
 import { Component, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslateDirective } from '@ngx-translate/core';
-import { combineLatestWith, Observable, Subscription } from 'rxjs';
+import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { combineLatestWith, Subscription } from 'rxjs';
 import { faCheck, faCircleChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ExchangeSessionComponent } from "../exchange-session/exchange-session.component";
@@ -14,7 +14,7 @@ import { LanguageService } from '../services/language.service';
     selector: 'wsl-overview',
     templateUrl: './overview.component.html',
     styleUrls: ['./overview.component.scss'],
-    imports: [CommonModule, FontAwesomeModule, RouterLink, ExchangeSessionComponent, TranslateDirective]
+    imports: [CommonModule, FontAwesomeModule, RouterLink, ExchangeSessionComponent, TranslatePipe, TranslateDirective]
 })
 export class OverviewComponent implements OnDestroy {
     subscriptions = new Subscription();
@@ -23,6 +23,7 @@ export class OverviewComponent implements OnDestroy {
     faCircleChevronUp = faCircleChevronUp;
     interested: { [pk: ExchangeSession['pk']]: boolean } = {};
     interestedList: ExchangeSession[] = [];
+    open = this.registrationService.open$;
 
     language: Language = 'nl';
     deadline?: string;

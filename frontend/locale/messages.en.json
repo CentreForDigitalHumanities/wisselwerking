@@ -28,7 +28,8 @@
         "explain": "Pick your first choice and if you want also your second and third choices. Your participation is only definitive once it has been confirmed by the organizer of the exchange. Keep in mind that your choice can also be full.",
         "surprise": "Surprise me",
         "thankyou": "Thank you!",
-        "thankyou_message": "Great that you have registered for an exchange, {{firstName}}! We'll mail you a confirmation of your registration."
+        "thankyou_message": "Great that you have registered for an exchange, {{firstName}}! We'll mail you a confirmation of your registration.",
+        "closed": "Registration is closed"
     },
     "Taal": "Language",
     "Naam": "Name",

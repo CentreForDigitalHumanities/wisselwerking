@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Dict, List
 from registration.models import (
     Department,
@@ -29,6 +29,7 @@ def current_exchange(request):
             "pk": exchange.pk,
             "begin": exchange.begin,
             "end": exchange.end,
+            "open": exchange.open,
             "enrollment_deadline": exchange.enrollment_deadline,
             "descriptions": [
                 {
@@ -104,6 +105,13 @@ def departments(request):
 
 @api_view(["POST"])
 def register(request: Request):
+    exchange = Exchange.objects.get(active=True)
+    if not exchange.open:
+        return Response(
+            {"success": False},
+            # 425 TOO EARLY
+            # 410 GONE
+            425 if exchange.enrollment_deadline > date.today() else 410)
     email = request.data["email"].lower()
     person = Person.get_by_email(email)
     first_name = request.data["firstName"]
@@ -165,8 +173,6 @@ def register(request: Request):
     person.user.first_name = first_name
     person.user.last_name = last_name
     person.user.save()
-
-    exchange = Exchange.objects.get(active=True)
 
     # registering again? replace any existing registrations on this exchange
     Registration.objects.filter(requestor=person, exchange=exchange).delete()

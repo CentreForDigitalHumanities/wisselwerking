@@ -17,6 +17,7 @@ interface Exchange {
     "pk": number,
     "begin": number,
     "end": number,
+    "open": boolean,
     "enrollment_deadline": string, // yyyy-MM-dd
     "descriptions": {
         text: string,
@@ -29,11 +30,13 @@ interface Exchange {
 })
 export class RegistrationService {
     private deadline = new BehaviorSubject<Date>(new Date());
+    private open = new BehaviorSubject<boolean>(false);
     private description = new BehaviorSubject<string>('');
     private interested = new BehaviorSubject<{ [pk: ExchangeSession['pk']]: boolean }>({});
     private interestedPriorities = new BehaviorSubject<ExchangeSessionPriority[]>([]);
     private sessions = new BehaviorSubject<ExchangeSession[]>([]);
 
+    open$ = this.open.asObservable();
     deadline$ = this.deadline.asObservable();
     description$ = this.description.asObservable();
     interested$ = this.interested.asObservable();
@@ -50,6 +53,7 @@ export class RegistrationService {
         private http: HttpClient) {
         this.backend.get('current_exchange').then((exchange: Exchange) => {
             this.deadline.next(new Date(exchange.enrollment_deadline));
+            this.open.next(exchange.open);
             this.languageService.current$.subscribe(language => {
                 this.description.next(exchange.descriptions.find(d => d.language === language)?.text ?? '');
             });
