@@ -1,7 +1,9 @@
 from typing import List, cast
 from django import forms
 from django.contrib import admin, messages
+from django.contrib.auth.models import User
 from django.contrib.postgres.aggregates import StringAgg
+from django.core import validators
 from django.db.models.query import QuerySet
 
 
@@ -16,6 +18,7 @@ from registration.models import (
     Mail,
     PersonMail,
     Registration,
+    unique_username,
 )
 
 
@@ -124,9 +127,20 @@ class PersonMailInline(admin.TabularInline):
 class PersonForm(forms.ModelForm):
     given_names = forms.CharField()
     surnames = forms.CharField()
-    main_mail = forms.ChoiceField(choices=[], required=False)
+    main_mail = forms.ChoiceField(
+        choices=[],
+        required=True,
+        help_text="Can be changed in the User object",
+        validators=[validators.validate_email],
+    )
     sessions = forms.CharField(widget=forms.Textarea, disabled=True, required=False)
     organizes = forms.CharField(widget=forms.Textarea, disabled=True, required=False)
+
+    def clean_main_mail(self):
+        # allow custom/new email
+        email = self.cleaned_data["main_mail"]
+        self.fields["main_mail"].choices = [email]
+        return email
 
     def save(self, commit=True):
         main_mail = self.cleaned_data.get("main_mail", None)
@@ -134,7 +148,14 @@ class PersonForm(forms.ModelForm):
         surnames = self.cleaned_data.get("surnames", None)
 
         person: Person = self.instance
-
+        if person.user is None:
+            person.user = User(
+                username=unique_username(
+                    given_names, self.cleaned_data.get("prefix_surname"), surnames
+                )
+            )
+            # new user has this email
+            person.user.email = main_mail
         if main_mail != person.user.email:
             # swap PersonMail objects
             pm = PersonMail.objects.get(person=person, address=main_mail)
@@ -147,22 +168,29 @@ class PersonForm(forms.ModelForm):
 
         person.user.first_name = given_names
         person.user.last_name = surnames
+        person.user._new = True  # prevents the post_save from creating another Person
         person.user.save()
 
         # ...do something with extra_field here...
         return super().save(commit=commit)
 
     def __init__(self, *args, **kwargs):
+        # new person needs an email address
         super().__init__(*args, **kwargs)
+        self.fields["user"].disabled = True
+        self.fields["user"].required = False
         person: Person = self.instance
         emails = set([person.email])
         for pm in PersonMail.objects.filter(person=person):
             emails.add(pm.address)
-        self.fields["main_mail"].choices = set((m, m) for m in emails)
+        if person.user is None:
+            self.fields["main_mail"] = forms.EmailField(required=True)
+        else:
+            self.fields["main_mail"].choices = set((m, m) for m in emails)
+            self.fields["main_mail"].initial = person.email
 
         self.fields["given_names"].initial = person.given_names
         self.fields["surnames"].initial = person.surnames
-        self.fields["main_mail"].initial = person.email
 
         # get and display all the sessions
         self.fields["organizes"].initial = self.list_sessions(
@@ -215,11 +243,18 @@ class PersonAdmin(admin.ModelAdmin):
         )
 
     def has_add_permission(self, request, obj=None):
-        return False
+        return True
 
 
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ["requestor", "date_time", "exchange", "session", "priority", "date_time"]
+    list_display = [
+        "requestor",
+        "date_time",
+        "exchange",
+        "session",
+        "priority",
+        "date_time",
+    ]
     ordering = ["date_time"]
     list_filter = ["exchange", "session__department"]
 

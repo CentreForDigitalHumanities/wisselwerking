@@ -53,19 +53,19 @@ class Mail(models.Model):
 
 
 class Person(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
     @property
     def email(self):
-        return self.user.email
+        return getattr(self.user, 'email', '')
 
     @property
     def given_names(self):
-        return self.user.first_name
+        return getattr(self.user, 'first_name', '')
 
     @property
     def surnames(self):
-        return self.user.last_name
+        return getattr(self.user, 'last_name', '')
 
     @property
     def full_name(self):
@@ -76,7 +76,7 @@ class Person(models.Model):
             )
         )
         if not name or name.isspace():
-            return self.user.username
+            return getattr(self.user, 'username', '')
         return name
 
     prefix_surname = models.CharField(blank=True)
@@ -396,6 +396,10 @@ def active_exchange(sender, instance: Exchange, **kwargs):
 @receiver(post_save, sender=User)
 def add_person(sender, instance: User, **kwargs):
     """Add a person for every user"""
+
+    if hasattr(instance, '_new'):
+        # prevent creating a Person when we are already creating one
+        return
 
     try:
         Person.objects.get(user=instance)
