@@ -12,7 +12,7 @@ certifi==2024.7.4
     # via selenium
 h11==0.16.0
     # via wsproto
-idna==3.7
+idna==3.15
     # via trio
 iniconfig==2.0.0
     # via pytest
@@ -22,9 +22,11 @@ packaging==24.1
     # via pytest
 pluggy==1.5.0
     # via pytest
+pygments==2.21.0
+    # via pytest
 pysocks==1.7.1
     # via urllib3
-pytest==8.2.2
+pytest==9.0.3
     # via -r requirements.in
 selenium==4.22.0
     # via -r requirements.in
