@@ -139,7 +139,7 @@ class PersonForm(forms.ModelForm):
     def clean_main_mail(self):
         # allow custom/new email
         email = self.cleaned_data["main_mail"]
-        self.fields["main_mail"].choices = [email]
+        self.fields["main_mail"].choices = [(email, email)]
         return email
 
     def save(self, commit=True):
@@ -175,14 +175,17 @@ class PersonForm(forms.ModelForm):
         return super().save(commit=commit)
 
     def __init__(self, *args, **kwargs):
+        newly_created = kwargs.get('instance') is None
+
         # new person needs an email address
         super().__init__(*args, **kwargs)
         self.fields["user"].disabled = True
         self.fields["user"].required = False
         person: Person = self.instance
         emails = set([person.email])
-        for pm in PersonMail.objects.filter(person=person):
-            emails.add(pm.address)
+        if not newly_created:
+            for pm in PersonMail.objects.filter(person=person):
+                emails.add(pm.address)
         if person.user is None:
             self.fields["main_mail"] = forms.EmailField(required=True)
         else:
@@ -192,13 +195,14 @@ class PersonForm(forms.ModelForm):
         self.fields["given_names"].initial = person.given_names
         self.fields["surnames"].initial = person.surnames
 
-        # get and display all the sessions
-        self.fields["organizes"].initial = self.list_sessions(
-            ExchangeSession.objects.filter(organizers=person)
-        )
-        self.fields["sessions"].initial = self.list_sessions(
-            ExchangeSession.objects.filter(assigned=person)
-        )
+        if not newly_created:
+            # get and display all the sessions
+            self.fields["organizes"].initial = self.list_sessions(
+                ExchangeSession.objects.filter(organizers=person)
+            )
+            self.fields["sessions"].initial = self.list_sessions(
+                ExchangeSession.objects.filter(assigned=person)
+            )
 
     def list_sessions(self, query_set: QuerySet[Person]) -> str:
         return "\n".join(sorted(str(session) for session in query_set))
