@@ -41,5 +41,5 @@ sqlparse==0.5.1
     # via django
 tornado==6.4.1
     # via django-livereload-server
-urllib3==2.6.0
+urllib3==2.8.0
     # via django-revproxy
