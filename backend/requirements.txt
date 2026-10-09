@@ -37,7 +37,7 @@ pytest-django==4.8.0
     # via -r requirements.in
 pytest-xdist==3.6.1
     # via -r requirements.in
-sqlparse==0.5.1
+sqlparse==0.6.0
     # via django
 tornado==6.4.1
     # via django-livereload-server
