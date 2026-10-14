@@ -29,6 +29,7 @@ def unique_username(first_name: str, prefix: str, last_name: str) -> str:
         except User.DoesNotExist:
             return candidate
 
+
 def get_team_str() -> str:
     team = Group.objects.get(name="Team")
     persons = Person.objects.filter(user__groups=team).order_by("user__first_name")
@@ -57,15 +58,15 @@ class Person(models.Model):
 
     @property
     def email(self):
-        return getattr(self.user, 'email', '')
+        return getattr(self.user, "email", "")
 
     @property
     def given_names(self):
-        return getattr(self.user, 'first_name', '')
+        return getattr(self.user, "first_name", "")
 
     @property
     def surnames(self):
-        return getattr(self.user, 'last_name', '')
+        return getattr(self.user, "last_name", "")
 
     @property
     def full_name(self):
@@ -76,7 +77,7 @@ class Person(models.Model):
             )
         )
         if not name or name.isspace():
-            return getattr(self.user, 'username', '')
+            return getattr(self.user, "username", "")
         return name
 
     prefix_surname = models.CharField(blank=True)
@@ -110,15 +111,15 @@ class Person(models.Model):
             return target.move_to(self)
 
         emails: Set[str] = set()
-        emails.add(target.email)
-        emails.add(self.email)
+        emails.add(target.email.strip())
+        emails.add(self.email.strip())
 
         for pm in PersonMail.objects.filter(person=target):
             emails.add(pm.address)
 
         for pm in PersonMail.objects.filter(person=self):
             if pm.address not in emails:
-                emails.add(pm.address)
+                emails.add(pm.address.strip())
                 pm.person = target
             else:
                 pm.delete()
@@ -175,6 +176,9 @@ class Person(models.Model):
 
         self.user.delete()
         self.delete()
+        if len(self.user.username) < len(target.user.username):
+            # choose the shortest username
+            target.user.username = self.user.username
         target.user.save()
         target.save()
 
@@ -347,16 +351,13 @@ class Registration(models.Model):
         on_delete=models.CASCADE,
         help_text="Keep empty for assigning to a random session",
     )
-    exchange = models.ForeignKey(
-        Exchange, on_delete=models.CASCADE
-    )
+    exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
     priority = models.IntegerField()
     """One-based priority; with 1 being the most priority given
     """
     date_time = models.DateTimeField()
     notes = models.TextField(blank=True)
     reason = models.CharField(blank=True)
-
 
     def save(self, *args, **kwargs):
         if self.session:
@@ -397,7 +398,7 @@ def active_exchange(sender, instance: Exchange, **kwargs):
 def add_person(sender, instance: User, **kwargs):
     """Add a person for every user"""
 
-    if hasattr(instance, '_new'):
+    if hasattr(instance, "_new"):
         # prevent creating a Person when we are already creating one
         return
 
