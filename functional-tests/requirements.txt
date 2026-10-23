@@ -8,7 +8,7 @@ attrs==23.2.0
     # via
     #   outcome
     #   trio
-certifi==2024.7.4
+certifi==2026.10.19
     # via selenium
 h11==0.16.0
     # via wsproto
