@@ -41,7 +41,7 @@ pytest-xdist==3.6.1
     # via -r requirements.in
 sqlparse==0.6.0
     # via django
-tornado==6.5.9
+tornado==6.6
     # via django-livereload-server
 urllib3==2.8.0
     # via django-revproxy
