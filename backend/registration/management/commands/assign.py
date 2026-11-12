@@ -48,7 +48,7 @@ class Command(BaseCommand):
             if registration.priority > max_priority:
                 max_priority = registration.priority
             if registration.session is not None:
-                if registration.session.pk not in min_priority_session or _
+                if registration.session.pk not in min_priority_session or \
                     registration.priority < min_priority_session[registration.session.pk]:
                     min_priority_session[registration.session.pk] = registration.priority
 
