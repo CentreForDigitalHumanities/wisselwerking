@@ -60,7 +60,9 @@ class Command(BaseCommand):
         # first try to give everyone their first pick
         for priority in range(1, max_priority + 1):
             for registration in registrations:
-                if registration.priority == min(priority, min_priority_session[registration.session.pk]):
+                if registration.priority == min(
+                    priority, 
+                    min_priority_session[registration.session.pk] if registration.session else priority):
                     self.attempt_placement(registration)
 
         print(f"Unassigned requestors: {len(self.unassigned_requestors)}")
