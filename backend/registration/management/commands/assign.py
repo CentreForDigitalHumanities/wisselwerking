@@ -37,11 +37,21 @@ class Command(BaseCommand):
         # which could be at most the number of available sessions
         max_priority = 1
 
+        # lowest priority per session; if no one has it as first use this as 
+        # 1 instead. This way if no one gave something their top priority
+        # then the first highest will get assigned instead
+        min_priority_session = {}
+
         print("Notes from requestors: ")
         requestor = None # multiple registration per requestor
         for registration in registrations:
             if registration.priority > max_priority:
                 max_priority = registration.priority
+            if registration.session is not None:
+                if registration.session.pk not in min_priority_session or _
+                    registration.priority < min_priority_session[registration.session.pk]:
+                    min_priority_session[registration.session.pk] = registration.priority
+
             if registration.notes and requestor != registration.requestor:
                 print(f"# {registration.requestor}")
                 print(registration.notes + "\n")
@@ -50,7 +60,7 @@ class Command(BaseCommand):
         # first try to give everyone their first pick
         for priority in range(1, max_priority + 1):
             for registration in registrations:
-                if registration.priority == priority:
+                if registration.priority == min(priority, min_priority_session[registration.session.pk])
                     self.attempt_placement(registration)
 
         print(f"Unassigned requestors: {len(self.unassigned_requestors)}")
